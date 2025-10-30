@@ -8,6 +8,15 @@ class Product(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     descripcion = models.TextField(blank=True)
     creado_en = models.DateTimeField(auto_now_add=True)
+    imagen = models.ImageField(
+        upload_to='products/%Y/%m/%d/',
+        blank=True,
+        null=True
+    )
+
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
 
     def __str__(self):
         return self.nombre

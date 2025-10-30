@@ -1,0 +1,18 @@
+<!-- templates/products/product_list.html -->
+{% extends "base.html" %}
+{% block content %}
+  <h1>Productos</h1>
+  <a href="{% url 'products:product_create' %}">Nuevo producto</a>
+  <ul>
+  {% for p in products %}
+    <li>
+      <a href="{% url 'products:product_detail' p.pk %}">{{ p.name }}</a>
+      {% if p.image %}
+        <br><img src="{{ p.image.url }}" alt="{{ p.name }}" style="max-width:150px; height:auto;">
+      {% endif %}
+    </li>
+  {% empty %}
+    <li>No hay productos</li>
+  {% endfor %}
+  </ul>
+{% endblock %}

@@ -33,3 +33,6 @@ def login_view(request):
 
 def home_view(request):
     return render(request, 'users/home.html')
+
+def profile_view(request):
+    return render(request, 'users/profile.html')

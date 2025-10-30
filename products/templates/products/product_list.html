@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Productos</h2>
+
+  <div class="row">
+    {% for producto in productos %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ producto.nombre }}</h5>
+          <p class="card-text">{{ producto.descripcion|truncatewords:20 }}</p>
+          <p class="text-success fw-bold">${{ producto.precio }}</p>
+          <a href="{% url 'productos:detalle' producto.id %}" class="btn btn-primary">Ver más</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center">
+      <p>No hay productos disponibles por el momento ¡Perdón!</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

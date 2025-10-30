@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Añadir producto</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <p>
+      {{ form.name.label_tag }}<br>
+      {{ form.name }}
+      {{ form.name.errors }}
+    </p>
+    <p>
+      {{ form.description.label_tag }}<br>
+      {{ form.description }}
+    </p>
+    <p>
+      {{ form.price.label_tag }}<br>
+      {{ form.price }}
+    </p>
+    <p>
+      {{ form.image.label_tag }}<br>
+      {{ form.image }}
+      {{ form.image.errors }}
+    </p>
+    <button type="submit">Guardar</button>
+  </form>
+{% endblock %}
