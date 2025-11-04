@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
+from django.conf import settings
 from rest_framework import viewsets
 from .models import Product
 from .forms import ProductForm
@@ -57,22 +58,6 @@ def product_delete(request, pk):
         product.save()
         return redirect("product-list")
     return render(request, "product_confirm_delete.html", {"product": product})
-
-# añadir al carrito
-@login_required
-def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    cart, created = Cart.objects.get_or_create(user=request.user)
-    item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-    item.quantity += 1
-    item.save()
-    return redirect("view-cart")
-
-# ver carrito
-@login_required
-def view_cart(request):
-    cart, created = Cart.objects.get_or_create(user=request.user)
-    return render(request, "cart.html", {"cart": cart})
 
 # lo de MP
 def create_preference(request, product_id):
