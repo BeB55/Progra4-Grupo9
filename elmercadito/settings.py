@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "users",
     "products",
+    "cart",
 ]
 
 SITE_ID = 1
@@ -50,8 +51,8 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-ACCOUNT_LOGIN_METHOD = "username_email"
-ACCOUNT_SIGNUP_FIELDS = ["username", "email", "password1", "password2"]
+ACCOUNT_LOGIN_METHOD = ["username*", "password*"] 
+ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*", "password2*"]
 
 
 MIDDLEWARE = [
@@ -93,14 +94,14 @@ WSGI_APPLICATION = 'elmercadito.wsgi.application'
 
 
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-    "APP": {
-            "client_id": config("GOOGLE_OAUTH_CLIENT_ID"),
-            "secret": config("GOOGLE_OAUTH_CLIENT_SECRET"),
-    } ,   
-        'SCOPE': ['profile','email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-    }
+    # 'google': {
+    # "APP": {
+    #         "client_id": config("GOOGLE_OAUTH_CLIENT_ID"),
+    #         "secret": config("GOOGLE_OAUTH_CLIENT_SECRET"),
+    # } ,   
+    #     'SCOPE': ['profile','email'],
+    #     'AUTH_PARAMS': {'access_type': 'online'},
+    # }
 }
 DATABASES = {
     'default': {
