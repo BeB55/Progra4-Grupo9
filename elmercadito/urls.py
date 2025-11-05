@@ -11,6 +11,5 @@ urlpatterns = [
     path('api/auth/', include('rest_framework.urls')),
     path('productos/', include('products.urls')),
     path('scraping/', include('scraping.urls')),
-    path('telegram_chat/', include('telegram_chat.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
