@@ -12,10 +12,10 @@ def add_to_cart(request, product_id):
     item, created = CartItem.objects.get_or_create(cart=cart, product=product)
     item.quantity += 1
     item.save()
-    return redirect("view-cart")
+    return redirect("carrito:view_cart")
 
 # ver carrito
 @login_required
 def view_cart(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
-    return render(request, "cart.html", {"cart": cart})
+    return render(request, "cart/cart.html", {"cart": cart})
