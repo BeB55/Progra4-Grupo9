@@ -11,4 +11,6 @@
   {% else %}
     <p>No hay imagen disponible</p>
   {% endif %}
+  <a href="{% url 'products:product_list' %}" class="btn btn-secondary mt-3">Volver a productos</a>
+  <a href="{% url 'carrito:add_to_cart' product.id %}" class="btn btn-success mt-3">Agregar al carrito 🛒</a>
 {% endblock %}
