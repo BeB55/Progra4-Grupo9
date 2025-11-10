@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h1>Mi perfil</h1>
-<p>Bienvenido, {{ user.username }}.</p>
+<p>Bienvenido/a, {{ user.username }}.</p>
 <p>Correo electrónico: {{ user.email }}</p>
+{% endblock %}

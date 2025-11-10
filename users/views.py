@@ -1,14 +1,19 @@
 from django.shortcuts import render, redirect
 from rest_framework import viewsets
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, logout, authenticate
 from .forms import CustomUserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from .models import CustomUser
 from .serializers import UserSerializer
+from django.http import HttpResponseRedirect
+import time
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
+
+def home_view(request):
+    return render(request, '../templates/home.html')
 
 def signup_view(request):
     if request.method == 'POST':
@@ -31,8 +36,9 @@ def login_view(request):
 
     return render(request, 'users/login.html', {'form': form})
 
-def home_view(request):
-    return render(request, 'users/home.html')
+def signout_view(request):
+    logout(request)
+    return render(request, 'users/logout.html')
 
 def profile_view(request):
     return render(request, 'users/profile.html')

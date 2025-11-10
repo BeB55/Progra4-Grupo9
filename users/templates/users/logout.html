@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Sesion finalizada. Redirigiendo a la página principal...</h3>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "{% url 'home' %}";
+    }, 2000);  // redirige después de 2 segundos
+  </script>
+{% endblock %}

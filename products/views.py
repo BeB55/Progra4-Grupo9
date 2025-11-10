@@ -35,6 +35,10 @@ def perform_create(self, serializer):
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'products/product_list.html', {'products': products})
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    return render(request, 'products/product_detail.html', {'product': product})
         
 # Editar producto
 @login_required
@@ -47,7 +51,7 @@ def product_edit(request, pk):
             return redirect("product-list")
     else:
         form = ProductForm(instance=product)
-    return render(request, "products_form.html", {"form": form})
+    return render(request, "products/products_form.html", {"form": form})
 
 # Eliminar producto
 @login_required
@@ -57,48 +61,7 @@ def product_delete(request, pk):
         product.active = False
         product.save()
         return redirect("product-list")
-    return render(request, "product_confirm_delete.html", {"product": product})
+    return render(request, "products/product_confirm_delete.html", {"product": product})
 
 # lo de MP
-def create_preference(request, product_id):
-    try:
-        product = Product.objects.get(id=product_id)
-    except Product.DoesNotExist:
-        return JsonResponse({"error": "Producto no encontrado"}, status=404)
-
-    sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
-
-    preference_data = {
-        "items": [
-            {
-                "title": product.title,
-                "quantity": 1,
-                "unit_price": float(product.price),
-                "currency_id": "ARS",
-            }
-        ],
-        "back_urls": {
-        "success": "https://www.google.com",   # temporal para test
-        "failure": "https://www.google.com",
-        "pending": "https://www.google.com",
-        },
-        # "back_urls": {
-        #     "success": request.build_absolute_uri("/pago-exitoso/"),
-        #     "failure": request.build_absolute_uri("/pago-fallido/"),
-        #     "pending": request.build_absolute_uri("/pago-pendiente/"),
-        # },
-        "auto_return": "approved",
-    }
-
-    preference = sdk.preference().create(preference_data)
-
-    # Log completo en consola Django
-    print("MercadoPago response:", preference)
-
-    if preference["status"] != 201:  # 201 es éxito en MP
-        return JsonResponse({
-            "error": "No se pudo crear la preferencia",
-            "detalle": preference
-        }, status=400)
-
-    return JsonResponse({"init_point": preference["response"]["init_point"]})
+# 
