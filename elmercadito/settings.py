@@ -1,6 +1,10 @@
 import os
 from pathlib import Path
 from decouple import config
+from dotenv import load_dotenv
+from django.conf import settings
+
+load_dotenv()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -18,6 +22,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+ORS_API_KEY = os.getenv('ORS_API_KEY')
 
 # Application definition
 

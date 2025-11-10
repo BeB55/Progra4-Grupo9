@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>🗺️ Mapa de la ruta de delivery</title>
+
+    <!-- ✅ CSS de Leaflet (sin integrity para evitar bloqueos) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        #map {
+            height: 90vh;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 10px;
+            border: 2px solid #444;
+        }
+    </style>
+</head>
+<body>
+    <h2>🗺️ Mapa de la ruta de delivery</h2>
+
+    <div id="map"></div>
+
+    <!-- ✅ Scripts de Leaflet (sin integrity) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- ✅ Usamos json_script para pasar los datos de Django a JS -->
+    {{ origen|json_script:"origen" }}
+    {{ destino|json_script:"destino" }}
+    {{ ruta|json_script:"ruta" }}
+
+    <script>
+        // ✅ Recuperamos los datos del HTML
+        const origen = JSON.parse(document.getElementById("origen").textContent);
+        const destino = JSON.parse(document.getElementById("destino").textContent);
+        const ruta = JSON.parse(document.getElementById("ruta").textContent);
+
+        // Inicializamos el mapa centrado en el origen
+        const map = L.map('map').setView(origen, 13);
+
+        // Capa base de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        // Marcadores y círculos
+        L.circle(origen, {radius: 200, color: 'red'}).addTo(map);
+        L.marker(origen).addTo(map).bindPopup("📍 Origen");
+        L.marker(destino).addTo(map).bindPopup("🏁 Destino");
+
+        // Dibujar la ruta si existe
+        if (ruta && ruta.geometry) {
+            const coords = decodePolyline(ruta.geometry);
+            L.polyline(coords, { color: 'blue', weight: 4 }).addTo(map);
+            map.fitBounds(coords);
+        } else {
+            console.warn("⚠️ No hay geometría en la ruta:", ruta);
+        }
+
+        // Función para decodificar polyline (algoritmo de Google)
+        function decodePolyline(str, precision = 5) {
+            let index = 0, lat = 0, lng = 0, coordinates = [], shift = 0, result = 0, byte = null;
+            const factor = Math.pow(10, precision);
+
+            while (index < str.length) {
+                byte = null; shift = 0; result = 0;
+                do {
+                    byte = str.charCodeAt(index++) - 63;
+                    result |= (byte & 0x1f) << shift;
+                    shift += 5;
+                } while (byte >= 0x20);
+                const deltaLat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+                lat += deltaLat;
+
+                shift = 0; result = 0;
+                do {
+                    byte = str.charCodeAt(index++) - 63;
+                    result |= (byte & 0x1f) << shift;
+                    shift += 5;
+                } while (byte >= 0x20);
+                const deltaLng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+                lng += deltaLng;
+
+                coordinates.push([lat / factor, lng / factor]);
+            }
+
+            return coordinates;
+        }
+    </script>
+</body>
+</html>
