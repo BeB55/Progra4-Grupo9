@@ -63,8 +63,6 @@ python manage.py runserver
 
 requirements.txt → dependencias
 
-Procfile → comando de inicio con gunicorn
-
 collectstatic → gestión de archivos estáticos
 
 Variables de entorno configuradas en el panel de la plataforma
