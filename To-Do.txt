@@ -1,0 +1,6 @@
+1. Diseño y nombre
+2. Chatbot de ayuda (u otra cosa)
+3. Filtro y busqueda de productos
+4. MP
+5. Comparador de precios (boton)
+6. Deployarlo a render
