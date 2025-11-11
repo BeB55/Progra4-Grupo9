@@ -23,3 +23,5 @@ Thumbs.db
 # Archivos de migración
 */migrations/*.py
 */migrations/*.pyc
+
+api-keys.py

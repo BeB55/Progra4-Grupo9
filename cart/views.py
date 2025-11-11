@@ -4,6 +4,10 @@ from django.contrib.auth.decorators import login_required
 from products.models import Product
 from .models import Cart, CartItem
 from django.contrib import messages
+import mercadopago
+# from django.conf import settings
+from elmercadito import settings
+from django.http import JsonResponse
 
 # añadir al carrito
 @login_required
@@ -66,3 +70,41 @@ def update_quantity(request, item_id, accion):
         item.save()
     return redirect("carrito:view_cart")
 
+@login_required
+def create_preference(request):
+    """Genera una preferencia de pago para todos los productos del carrito"""
+    cart = Cart.objects.filter(user=request.user).first()
+    if not cart or not cart.items.exists():
+        return JsonResponse({"error": "El carrito está vacío"}, status=400)
+
+    sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
+
+    items = []
+    for item in cart.items.all():
+        items.append({
+            "title": item.product.product_name,
+            "quantity": item.quantity,
+            "unit_price": float(item.product.price),
+            "currency_id": "ARS",
+        })
+
+    preference_data = {
+        "items": items,
+        "back_urls": {
+            "success": request.build_absolute_uri("/pago-exitoso/"),
+            "failure": request.build_absolute_uri("/pago-fallido/"),
+            "pending": request.build_absolute_uri("/pago-pendiente/"),
+        },
+        "auto_return": "approved",
+    }
+
+    preference = sdk.preference().create(preference_data)
+    print("Respuesta MercadoPago:", preference)  # <- Te muestra el detalle en consola
+
+    if preference.get("status") != 201:
+        return JsonResponse({
+            "error": "No se pudo crear la preferencia",
+            "detalle": preference
+        }, status=400)
+
+    return JsonResponse({"init_point": preference["response"]["init_point"]})
