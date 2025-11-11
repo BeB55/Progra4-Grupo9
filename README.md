@@ -1,3 +1,27 @@
+# 🛒 El Mercadito
+
+El Mercadito es una aplicación web desarrollada en **Django** que simula un mercado online con funcionalidades de catálogo, carrito de compras, autenticación con Google y gestión de usuarios.  
+El proyecto está orientado a la práctica grupal de desarrollo web con integración de APIs externas y despliegue en la nube.
+
+---
+Tecnologías utilizadas
+- **Backend:** Django, Django REST Framework
+- **Frontend:** Bootstrap, Leaflet.js (mapas interactivos)
+- **Autenticación:** django-allauth con login de Google
+- **CI/CD:** GitHub Actions (testing automático)
+- **APIs externas:** OpenRouteService (cálculo de rutas y costos de delivery)
+- **Base de datos:** SQLite (desarrollo) / PostgreSQL (producción)
+- **Gestión de dependencias:** Python-decouple, dotenv
+
+---
+
+## ⚙️ Instalación y configuración
+
+### 1. Clonar el repositorio
+```bash
+git clone https://github.com/tuusuario/elmercadito.git
+cd elmercadito
+
 2. Crear entorno virtual
 bash
 python -m venv env
@@ -49,4 +73,5 @@ collectstatic → gestión de archivos estáticos
 Variables de entorno configuradas en el panel de la plataforma
 
 👥 Equipo
-Proyecto desarrollado en conjunto por estudiantes de Programación IV. Integrantes: Brian y equipo.
+Brian Baptista
+Ybarra Micaela
