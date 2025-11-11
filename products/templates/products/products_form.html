@@ -5,9 +5,9 @@
     {% csrf_token %}
     {{ form.non_field_errors }}
     <p>
-      {{ form.name.label_tag }}<br>
-      {{ form.name }}
-      {{ form.name.errors }}
+      {{ form.product_name.label_tag }}<br>
+      {{ form.product_name }}
+      {{ form.product_name.errors }}
     </p>
     <p>
       {{ form.description.label_tag }}<br>
@@ -16,6 +16,10 @@
     <p>
       {{ form.price.label_tag }}<br>
       {{ form.price }}
+    </p>
+    <p>
+      {{ form.brand.label_tag }}<br>
+      {{ form.brand }}
     </p>
     <p>
       {{ form.image.label_tag }}<br>

@@ -25,10 +25,12 @@ def product_create(request):
             product = form.save(commit=False)
             product.user = request.user
             product.save()
-            return redirect('product_list')
+            return redirect('products:product_list')
+
     else:
         form = ProductForm()
-    return render(request, 'products/product_form.html', {'form': form})
+    return render(request, 'products/products_form.html', {'form': form})
+    
 
 def perform_create(self, serializer):
     serializer.save(user=self.request.user)
