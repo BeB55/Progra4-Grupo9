@@ -1,8 +1,8 @@
 import os
+import mercadopago
 from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
-from django.conf import settings
 from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
@@ -18,8 +18,11 @@ GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
 
 ORS_API_KEY = os.getenv("ORS_API_KEY")
 
-MERCADOPAGO_ACCESS_TOKEN = "APP_USR-4657624598100520-092523-440f1d66e6ff093564413954d01fad44-2709727013"
-MERCADOPAGO_PUBLIC_KEY = "APP_USR-1dc3c16d-ee4e-4f86-b1a4-2d15db008b8b"
+MERCADOPAGO_ACCESS_TOKEN = os.getenv("MERCADOPAGO_ACCESS_TOKEN")
+MERCADOPAGO_PUBLIC_KEY = os.getenv("MERCADOPAGO_PUBLIC_KEY")
+
+# Agrega credenciales
+sdk = mercadopago.SDK("TEST_ACCESS_TOKEN")
 
 load_dotenv()
 

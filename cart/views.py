@@ -1,13 +1,15 @@
-from django.shortcuts import render
-from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.contrib import messages
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
+from elmercadito import settings
 from products.models import Product
 from .models import Cart, CartItem
-from django.contrib import messages
-import mercadopago
 # from django.conf import settings
-from elmercadito import settings
-from django.http import JsonResponse
+import mercadopago
+
 
 # añadir al carrito
 @login_required
@@ -91,9 +93,9 @@ def create_preference(request):
     preference_data = {
         "items": items,
         "back_urls": {
-            "success": request.build_absolute_uri("/pago-exitoso/"),
-            "failure": request.build_absolute_uri("/pago-fallido/"),
-            "pending": request.build_absolute_uri("/pago-pendiente/"),
+            "success": request.build_absolute_uri(reverse("carrito:pago_exitoso")),
+            "failure": request.build_absolute_uri(reverse("carrito:pago_fallido")),
+            "pending": request.build_absolute_uri(reverse("carrito:pago_pendiente")),
         },
         "auto_return": "approved",
     }
@@ -101,10 +103,32 @@ def create_preference(request):
     preference = sdk.preference().create(preference_data)
     print("Respuesta MercadoPago:", preference)  # <- Te muestra el detalle en consola
 
-    if preference.get("status") != 201:
+    if preference["status"] != 201:  # 201 es éxito en MP
         return JsonResponse({
             "error": "No se pudo crear la preferencia",
             "detalle": preference
         }, status=400)
 
     return JsonResponse({"init_point": preference["response"]["init_point"]})
+
+@login_required
+def pago_exitoso(request):
+    # Vaciar el carrito del usuario después del pago exitoso
+    cart = Cart.objects.filter(user=request.user).first()
+    if cart:
+        cart.items.all().delete()
+
+    messages.success(request, "✅ ¡Pago realizado con éxito! Gracias por tu compra 💖")
+    return redirect("carrito:view_cart")
+
+
+@login_required
+def pago_fallido(request):
+    messages.error(request, "❌ El pago fue rechazado o cancelado.")
+    return redirect("carrito:view_cart")
+
+@login_required
+def pago_pendiente(request):
+    messages.warning(request, "🕓 El pago está pendiente de aprobación.")
+    return redirect("carrito:view_cart")
+

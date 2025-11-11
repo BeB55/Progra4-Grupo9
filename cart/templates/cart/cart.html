@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container mt-4">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} mt-3" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  
   <h2>🛒 Mi carrito</h2>
 
   {% if items %}
@@ -39,6 +47,7 @@
       <a href="{% url 'carrito:clear_cart' %}" class="btn btn-danger">Vaciar carrito</a>
     </div>
 
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <script>
     document.getElementById("checkout-btn").addEventListener("click", function() {
       fetch("{% url 'carrito:crear-preferencia' %}")  // sin product_id
