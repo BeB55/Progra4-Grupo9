@@ -109,14 +109,14 @@ WSGI_APPLICATION = 'elmercadito.wsgi.application'
 
 
 SOCIALACCOUNT_PROVIDERS = {
-    # 'google': {
-    # "APP": {
-    #         "client_id": config("GOOGLE_OAUTH_CLIENT_ID"),
-    #         "secret": config("GOOGLE_OAUTH_CLIENT_SECRET"),
-    # } ,   
-    #     'SCOPE': ['profile','email'],
-    #     'AUTH_PARAMS': {'access_type': 'online'},
-    # }
+     'google': {
+        "APP": {
+             "client_id": config("GOOGLE_OAUTH_CLIENT_ID"),
+             "secret": config("GOOGLE_OAUTH_CLIENT_SECRET"),
+     } ,   
+         'SCOPE': ['profile','email'],
+         'AUTH_PARAMS': {'access_type': 'online'},
+     }
 }
 DATABASES = {
     'default': {
