@@ -12,25 +12,33 @@
   <div class="container-fluid d-flex align-items-center justify-content-between">
     <div class="d-flex align-items-center">
       
+      <!-- Botón Offcanvas -->
       <button class="navbar-toggler me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      
+      <!-- Logo -->
       <a class="navbar-brand mb-0 h1" href="{% url 'home' %}">
         <img src="{% static 'img/logo2.png' %}" alt="Mercadito" height="40">
       </a>
     </div>
 
-    
-    <div class="d-flex">
-      <a class="nav-link text-white me-3" href="{% url 'products:product_list' %}">Productos</a>
+    <!-- Enlaces + mini preview -->
+    <div class="d-flex align-items-center gap-3">
+      <a class="nav-link text-white" href="{% url 'products:product_list' %}">Productos</a>
       {% if user.is_authenticated %}
-        <a class="nav-link text-white me-3" href="{% url 'carrito:view_cart' %}">Mi carrito 🛒</a>
-        <a class="nav-link text-white me-3" href="{% url 'profile' %}">Mi perfil</a>
+        <a class="nav-link text-white" href="{% url 'carrito:view_cart' %}">Mi carrito 🛒</a>
         <a class="nav-link text-white" href="{% url 'logout' %}">Cerrar sesión</a>
+
+        <!-- 👉 Mini preview del avatar -->
+        <a href="{% url 'profile' %}">
+          <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'img/default.png' %}{% endif %}"
+               alt="Avatar"
+               class="rounded-circle border border-light"
+               width="35" height="35">
+        </a>
       {% else %}
-        <a class="nav-link text-white me-3" href="{% url 'login' %}">Ingresar</a>
+        <a class="nav-link text-white" href="{% url 'login' %}">Ingresar</a>
         <a class="nav-link text-white" href="{% url 'signup' %}">Registrarse</a>
       {% endif %}
     </div>
@@ -52,17 +60,44 @@
   {% block content %}{% endblock %}
 </main>
 
+<!-- Offcanvas -->
 <div class="offcanvas offcanvas-start text-bg-dark" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title" id="staticBackdropLabel">Menú</h5>
     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
   </div>
   <div class="offcanvas-body">
-    <p>Si no cerrás esto, no vas a poder seguir bajando.</p>
+
+    <!-- 👉 Bloque de usuario autenticado -->
+    {% if request.user.is_authenticated %}
+      <div class="text-center mb-4">
+        {% if request.user.avatar %}
+          <img src="{{ request.user.avatar.url }}" 
+               alt="Foto de perfil" 
+               class="rounded-circle border border-light" 
+               width="80" height="80">
+        {% else %}
+          <img src="{% static 'img/default.png' %}" 
+               alt="Foto por defecto" 
+               class="rounded-circle border border-light" 
+               width="80" height="80">
+        {% endif %}
+        <p class="mt-2">{{ request.user.username }}</p>
+        <a href="{% url 'edit_avatar' %}" class="btn btn-sm btn-outline-light mt-2">Editar foto</a>
+      </div>
+    {% endif %}
+
+    <!-- Botones -->
+    <a href="{% url 'products:mapa_delivery' %}" class="btn btn-outline-light w-100 mb-3 rounded-pill">Hacer pedido</a>
+    <a href="{% url 'products:about' %}" class="btn btn-outline-light w-100 mb-3 rounded-pill">Acerca de</a>
+
+    <p class="mt-3">Si no cerrás esto, no vas a poder seguir bajando.</p>
   </div>
 </div>
 
+<!-- Bootstrap JS (solo una vez) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
   setTimeout(() => {
     const alerts = document.querySelectorAll('.alert');

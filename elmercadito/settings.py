@@ -13,6 +13,10 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
+GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
+GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
+
+ORS_API_KEY = os.getenv("ORS_API_KEY")
 
 MERCADOPAGO_ACCESS_TOKEN = "APP_USR-4657624598100520-092523-440f1d66e6ff093564413954d01fad44-2709727013"
 MERCADOPAGO_PUBLIC_KEY = "APP_USR-1dc3c16d-ee4e-4f86-b1a4-2d15db008b8b"
@@ -33,6 +37,7 @@ SECRET_KEY = 'django-insecure-y4o+3-%*@a_h5vx!=q(m@!mm%f7mctbz6gt+@0=&@q1=!ak-jn
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 ORS_API_KEY = os.getenv('ORS_API_KEY')
 
@@ -113,14 +118,14 @@ WSGI_APPLICATION = 'elmercadito.wsgi.application'
 
 
 SOCIALACCOUNT_PROVIDERS = {
-    # 'google': {
-    # "APP": {
-    #         "client_id": config("GOOGLE_OAUTH_CLIENT_ID"),
-    #         "secret": config("GOOGLE_OAUTH_CLIENT_SECRET"),
-    # } ,   
-    #     'SCOPE': ['profile','email'],
-    #     'AUTH_PARAMS': {'access_type': 'online'},
-    # }
+     'google': {
+        "APP": {
+             "client_id": "GOOGLE_OAUTH_CLIENT_ID",
+             "secret": "GOOGLE_OAUTH_CLIENT_SECRET",
+     } ,   
+         'SCOPE': ['profile','email'],
+         'AUTH_PARAMS': {'access_type': 'online'},
+     }
 }
 DATABASES = {
     'default': {
