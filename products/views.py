@@ -35,6 +35,9 @@ def product_create(request):
 def perform_create(self, serializer):
     serializer.save(user=self.request.user)
 
+def home(request):
+    return render(request, "products/home.html")
+
 def product_list(request):
     products = Product.objects.all()
     return render(request, 'products/product_list.html', {'products': products})
@@ -66,12 +69,16 @@ def product_delete(request, pk):
         return redirect("product-list")
     return render(request, "products/product_confirm_delete.html", {"product": product})
 
-def crear_delivery(request):
+def about(request):
+    return render(request, "products/about.html")
+
+
+def crear_pedido(request):
     if request.method == 'POST':
-        lat_tienda = -34.6037   # Ejemplo: Buenos Aires
+        lat_tienda = -34.6037
         lng_tienda = -58.3816
 
-        customer_address = request.POST.get('customer_address')
+        customer_name = request.POST.get('customer_name')
         customer_lat = float(request.POST.get('customer_lat'))
         customer_lng = float(request.POST.get('customer_lng'))
 
@@ -85,7 +92,7 @@ def crear_delivery(request):
             )
 
             Delivery.objects.create(
-                customer_address=customer_address,
+                customer_address="",  # ya no pedís dirección manual
                 customer_lat=customer_lat,
                 customer_lng=customer_lng,
                 distance_km=ruta['distance_km'],
@@ -94,9 +101,35 @@ def crear_delivery(request):
                 geometry=ruta['geometry'],
             )
 
-        return redirect('product_list')
+        return JsonResponse({
+    "success": True,
+    "costo": round(float(costo), 2),
+    "distancia_km": round(float(ruta['distance_km']), 2),
+    "geometry": ruta['geometry'],
+})
 
-    return render(request, 'products/crear_delivery.html')
+
+
+def calcular_delivery(request):
+    lat_tienda, lng_tienda = -34.6037, -58.3816
+    customer_lat = float(request.GET.get("lat"))
+    customer_lng = float(request.GET.get("lng"))
+
+    ruta = calcular_ruta(lat_tienda, lng_tienda, customer_lat, customer_lng)
+
+    if ruta:
+        costo = calcular_costo_delivery(
+            ruta['distance_km'],
+            base_cost=DeliveryZone.objects.first().base_cost if DeliveryZone.objects.exists() else 200,
+            cost_per_km=DeliveryZone.objects.first().cost_per_km if DeliveryZone.objects.exists() else 50,
+        )
+        return JsonResponse({
+            "success": True,
+            "costo": round(float(costo), 2),
+            "distancia_km": round(float(ruta['distance_km']), 2),
+            "geometry": ruta['geometry'],
+        })
+    return JsonResponse({"success": False, "error": "No se pudo calcular ruta"})
 
 
 def mapa_delivery(request):

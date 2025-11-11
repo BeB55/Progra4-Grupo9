@@ -2,92 +2,180 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>🗺️ Mapa de la ruta de delivery</title>
-
-    <!-- ✅ CSS de Leaflet (sin integrity para evitar bloqueos) -->
+    <title>🗺️ Seleccioná tu ubicación</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
     <style>
+        body {
+            background-color: #212529; /* fondo oscuro */
+            color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 { text-align: center; margin-bottom: 20px; }
         #map {
-            height: 90vh;
+            height: 70vh;
             width: 100%;
             margin-top: 20px;
             border-radius: 10px;
             border: 2px solid #444;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
         }
+        .form-container {
+            background: #343a40;
+            color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.6);
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        .form-container input { margin-bottom: 10px; }
     </style>
 </head>
 <body>
-    <h2>🗺️ Mapa de la ruta de delivery</h2>
+    <h2>🗺️ Seleccioná tu ubicación</h2>
 
     <div id="map"></div>
 
-    <!-- ✅ Scripts de Leaflet (sin integrity) -->
+    <!-- Formulario para hacer pedido -->
+    <form id="pedidoForm" method="POST" action="{% url 'products:crear_pedido' %}" class="form-container">
+        {% csrf_token %}
+        <h4 style="margin-bottom: 10px;">📦 Datos del pedido</h4>
+        <input type="text" name="customer_name" placeholder="Tu nombre" class="form-control" required>
+        <p class="mb-2">📍 Seleccioná tu ubicación en el mapa</p>
+        <input type="hidden" name="customer_lat" id="customerLat">
+        <input type="hidden" name="customer_lng" id="customerLng">
+        <!-- 👉 Aquí mostramos costo y distancia -->
+        <p id="costoDelivery" class="mt-2 text-info"></p>
+        <button type="submit" class="btn btn-success w-100">Confirmar ubicación y ver productos</button>
+    </form>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- ✅ Usamos json_script para pasar los datos de Django a JS -->
-    {{ origen|json_script:"origen" }}
-    {{ destino|json_script:"destino" }}
-    {{ ruta|json_script:"ruta" }}
-
     <script>
-        // ✅ Recuperamos los datos del HTML
-        const origen = JSON.parse(document.getElementById("origen").textContent);
-        const destino = JSON.parse(document.getElementById("destino").textContent);
-        const ruta = JSON.parse(document.getElementById("ruta").textContent);
+    // Ubicación fija de la tienda
+    const origen = [-34.6037, -58.3816]; // Buenos Aires
+    const map = L.map('map').setView(origen, 13);
 
-        // Inicializamos el mapa centrado en el origen
-        const map = L.map('map').setView(origen, 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
 
-        // Capa base de OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap'
-        }).addTo(map);
+    // Marcador fijo de la tienda
+    L.marker(origen).addTo(map).bindPopup("📍 Tienda").openPopup();
 
-        // Marcadores y círculos
-        L.circle(origen, {radius: 200, color: 'red'}).addTo(map);
-        L.marker(origen).addTo(map).bindPopup("📍 Origen");
-        L.marker(destino).addTo(map).bindPopup("🏁 Destino");
+    // Marcador interactivo del pedido
+    let pedidoMarker;
 
-        // Dibujar la ruta si existe
-        if (ruta && ruta.geometry) {
-            const coords = decodePolyline(ruta.geometry);
-            L.polyline(coords, { color: 'blue', weight: 4 }).addTo(map);
-            map.fitBounds(coords);
-        } else {
-            console.warn("⚠️ No hay geometría en la ruta:", ruta);
-        }
+    // 👉 Detectar ubicación automáticamente
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
 
-        // Función para decodificar polyline (algoritmo de Google)
-        function decodePolyline(str, precision = 5) {
-            let index = 0, lat = 0, lng = 0, coordinates = [], shift = 0, result = 0, byte = null;
-            const factor = Math.pow(10, precision);
+                // Centrar mapa en la ubicación del usuario
+                map.setView([lat, lng], 15);
 
-            while (index < str.length) {
-                byte = null; shift = 0; result = 0;
-                do {
-                    byte = str.charCodeAt(index++) - 63;
-                    result |= (byte & 0x1f) << shift;
-                    shift += 5;
-                } while (byte >= 0x20);
-                const deltaLat = ((result & 1) ? ~(result >> 1) : (result >> 1));
-                lat += deltaLat;
+                // Crear marcador en la ubicación detectada
+                pedidoMarker = L.marker([lat, lng], { draggable: true })
+                                .addTo(map)
+                                .bindPopup("📍 Tu ubicación detectada").openPopup();
 
-                shift = 0; result = 0;
-                do {
-                    byte = str.charCodeAt(index++) - 63;
-                    result |= (byte & 0x1f) << shift;
-                    shift += 5;
-                } while (byte >= 0x20);
-                const deltaLng = ((result & 1) ? ~(result >> 1) : (result >> 1));
-                lng += deltaLng;
+                // Guardar coordenadas en los inputs ocultos
+                document.getElementById("customerLat").value = lat;
+                document.getElementById("customerLng").value = lng;
 
-                coordinates.push([lat / factor, lng / factor]);
+                // Calcular ruta y costo automáticamente
+                calcularDelivery(lat, lng);
+            },
+            function(error) {
+                console.error("No se pudo obtener la ubicación:", error);
+                alert("No se pudo detectar tu ubicación automáticamente. Seleccioná en el mapa.");
             }
+        );
+    }
 
-            return coordinates;
+    // 👉 Función para calcular delivery
+    function calcularDelivery(lat, lng) {
+        fetch(`/productos/api/calcular-delivery/?lat=${lat}&lng=${lng}`)
+          .then(res => res.json())
+          .then(data => {
+              if (data.success) {
+                  document.getElementById("costoDelivery").innerText =
+                      `Costo estimado: $${Number(data.costo).toFixed(2)} | Distancia: ${Number(data.distancia_km).toFixed(2)} km`;
+
+                  if (window.rutaPolyline) {
+                      map.removeLayer(window.rutaPolyline);
+                  }
+
+                  let coords;
+                  if (data.geometry.coordinates) {
+                      // GeoJSON: [lng, lat] → Leaflet: [lat, lng]
+                      coords = data.geometry.coordinates.map(c => [c[1], c[0]]);
+                  } else {
+                      coords = data.geometry;
+                  }
+
+                  window.rutaPolyline = L.polyline(coords, { color: 'blue', weight: 4 }).addTo(map);
+              }
+          })
+          .catch(err => console.error("Error en calcular-delivery:", err));
+    }
+
+    // 👉 Click manual en el mapa
+    map.on('click', function(e) {
+        const { lat, lng } = e.latlng;
+
+        if (pedidoMarker) {
+            pedidoMarker.setLatLng([lat, lng]);
+        } else {
+            pedidoMarker = L.marker([lat, lng], { draggable: true })
+                            .addTo(map)
+                            .bindPopup("📍 Ubicación del pedido").openPopup();
         }
+
+        document.getElementById("customerLat").value = lat;
+        document.getElementById("customerLng").value = lng;
+
+        calcularDelivery(lat, lng);
+    });
+
+    // 👉 Enviar formulario
+    const form = document.getElementById("pedidoForm");
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        if (!pedidoMarker) {
+            alert("Por favor, seleccioná la ubicación de tu pedido en el mapa.");
+            return;
+        }
+
+        const data = new FormData(form);
+
+        fetch("{% url 'products:crear_pedido' %}", {
+            method: "POST",
+            body: data,
+            headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) {
+                window.location.href = "{% url 'products:product_list' %}";
+            } else {
+                alert(response.error);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Ocurrió un error al crear el pedido.");
+        });
+    });
     </script>
 </body>
 </html>
+
+
+

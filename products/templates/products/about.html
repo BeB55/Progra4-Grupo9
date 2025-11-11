@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section style="padding: 40px 20px; background-color: #000; color: #f8f9fa;">
+    <div style="max-width: 800px; margin: auto;">
+        <h2 style="text-align: center;">Sobre Nosotros</h2>
+        <p style="font-size: 1.1em; line-height: 1.6;">
+            Bienvenido a El Mercadito, algo es algo 
+        </p>
+        <p style="font-size: 1.1em; line-height: 1.6;">
+            vamos que se puede
+        </p>
+        <p style="font-size: 1.1em; line-height: 1.6;">
+            Un saludo grande de parte del equipo de desarrollo.
+        </p>
+    </div>
+    <div style="text-align: center; margin-top: 30px;">
+    <a href="{% url 'home' %}" class="btn btn-outline-primary rounded-pill">← Volver al inicio</a>
+</div>
+
+</section>
+
+{% endblock %}

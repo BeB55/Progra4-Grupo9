@@ -7,6 +7,7 @@ from .models import CustomUser
 from .serializers import UserSerializer
 from django.http import HttpResponseRedirect
 import time
+from .forms import AvatarForm
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -42,3 +43,13 @@ def signout_view(request):
 
 def profile_view(request):
     return render(request, 'users/profile.html')
+
+def edit_avatar(request):
+    if request.method == 'POST':
+        form = AvatarForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = AvatarForm(instance=request.user)
+    return render(request, 'users/edit_avatar.html', {'form': form})
