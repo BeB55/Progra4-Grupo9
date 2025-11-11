@@ -29,6 +29,7 @@ SECRET_KEY = 'django-insecure-y4o+3-%*@a_h5vx!=q(m@!mm%f7mctbz6gt+@0=&@q1=!ak-jn
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 ORS_API_KEY = os.getenv('ORS_API_KEY')
 
