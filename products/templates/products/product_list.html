@@ -3,20 +3,35 @@
 
 {% block content %}
 <div class="container mt-5">
-  <h2 class="text-center mb-4">Productos</h2>
+    <div class="row justify-content-end">
+    <div class="col-4">
+      <h2 class="col align-self-center">Productos</h2>
+    </div>
+    <div class="col-4">
+      {% if user.is_authenticated %}
+        <a href="{% url 'products:product_create' %}" class="btn btn-success mb-3">➕ Nuevo producto</a>
+      {% endif %}
+    </div>
+    </div>
 
   <div class="row">
     {% for producto in products %}
     <div class="col-md-4 mb-4">
       <div class="card h-100 shadow-sm">
-        <img src="{{ producto.image }}" class="card-img-top" alt="{{ producto.name }}">
+
+        {% if producto.image %}
+          <img src="{{ producto.image.url }}" class="card-img-top" style="max-width:400px; height:auto;" alt="{{ producto.product_name }}">
+        {% else %}
+          <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="Sin imagen">
+        {% endif %}
+
         <div class="card-body">
           <h4 class="card-title">{{ producto }}</h4>
           <p class="card-text">{{ producto.description|truncatewords:20 }}</p>
           <p class="text-success fw-bold">${{ producto.price }}</p>
+          <p><strong>Publicado por:</strong> {{ producto.user.username }}</p>
           <a href="{% url 'products:product_detail' producto.id %}" class="btn btn-success">Ver</a>
         </div>
-        <img src="{{ producto.image }}" alt="">
       </div>
     </div>
     {% empty %}
