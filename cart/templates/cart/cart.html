@@ -1,23 +1,47 @@
 {% extends "base.html" %}
-{% block title %}Tu carrito{% endblock %}
-
 {% block content %}
-<h2>Carrito de compras</h2>
+<div class="container mt-4">
+  <h2>🛒 Mi carrito</h2>
 
-{% if cart.items.all %}
-  <ul>
-    {% for item in cart.items.all %}
-      <li>{{ item.product.product_name }} (x{{ item.quantity }}) — ${{ item.subtotal }}</li>
-    {% endfor %}
-  </ul>
-  <p><strong>Total:</strong> ${{ cart.total }}</p>
+  {% if items %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Precio</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.product.product_name }}</td>
+        <td>${{ item.product.price }}</td>
+        <td>
+          <a href="{% url 'carrito:update_quantity' item.id 'restar' %}" class="btn btn-sm btn-outline-secondary">−</a>
+          <span class="mx-2">{{ item.quantity }}</span>
+          <a href="{% url 'carrito:update_quantity' item.id 'sumar' %}" class="btn btn-sm btn-outline-secondary">+</a>
+        </td>
+        <td>${{ item.subtotal }}</td>
+        <td>
+          <a href="{% url 'carrito:remove_from_cart' item.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-  <!-- Botón de pago de todo el carrito -->
-  <button id="checkout-btn" class="btn btn-primary">Pagar carrito completo</button>
+  <h4 class="text-start mt-3">Total: ${{ total_general }}</h4>
 
+  <div class="d-flex justify-content-between mt-3">
+    <a href="#" class="btn btn-info">Pagar con Mercado Pago</a>
+    <a href="{% url 'carrito:clear_cart' %}" class="btn btn-danger">Vaciar carrito</a>
+  </div>
 
-
-{% else %}
-  <p>Tu carrito está vacío.</p>
-{% endif %}
+  {% else %}
+    <p>Tu carrito está vacío 🛒</p>
+  {% endif %}
+</div>
 {% endblock %}
