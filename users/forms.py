@@ -28,3 +28,8 @@ class CustomUserCreationForm(UserCreationForm):
         for field in self.fields.values():
             field.help_text = None
             field.widget.attrs.update({'class': 'form-control'})  # (opcional, para CSS)
+
+class AvatarForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['avatar']
