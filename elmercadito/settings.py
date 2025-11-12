@@ -123,8 +123,8 @@ WSGI_APPLICATION = 'elmercadito.wsgi.application'
 SOCIALACCOUNT_PROVIDERS = {
      'google': {
         "APP": {
-             "client_id": "GOOGLE_OAUTH_CLIENT_ID",
-             "secret": "GOOGLE_OAUTH_CLIENT_SECRET",
+             "client_id": GOOGLE_OAUTH_CLIENT_ID,
+             "secret": GOOGLE_OAUTH_CLIENT_SECRET,
      } ,   
          'SCOPE': ['profile','email'],
          'AUTH_PARAMS': {'access_type': 'online'},

@@ -3,24 +3,56 @@ from django.conf import settings
 from decimal import Decimal
 
 # Create your models here.
-class Product(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    product_name = models.CharField(max_length=100, default='sin nombre')
-    brand = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    description = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(
-        upload_to='products/%Y/%m/%d/',
-        blank=True,
-        null=True
-    )
-    active = models.BooleanField(default=True)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Categoría"
+        verbose_name_plural = "Categorías"
 
     def __str__(self):
-        return self.product_name
+        return self.name
+
+
+from django.conf import settings
+from django.db import models
+
+class Product(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    name = models.CharField("Nombre del producto", max_length=200, default="sin nombre")
+    brand = models.CharField("Marca", max_length=100, blank=True, null=True)
+    description = models.TextField("Descripción", blank=True)
+    price = models.DecimalField("Precio", max_digits=10, decimal_places=2, default=0)
+    stock = models.PositiveIntegerField("Stock disponible", default=0)
+    image = models.ImageField("Agregar imagen", upload_to="products/%Y/%m/%d/", blank=True, null=True)
+    category = models.ForeignKey(
+        "products.Category",
+        verbose_name="Categoría",
+        on_delete=models.CASCADE,
+        related_name="products",
+        null=True, blank=True
+    )
+    stock = models.PositiveIntegerField("Stock disponible", default=0)
+    active = models.BooleanField("Activo", default=True)
+    created = models.DateTimeField("Fecha de creación", auto_now_add=True)
+    updated = models.DateTimeField("Última actualización", auto_now=True)
+
+    def save(self, *args, **kwargs):
+        # Si no se asigna categoría, usar "General"
+        if not self.category:
+            from products.models import Category
+            general, _ = Category.objects.get_or_create(
+                name="General",
+                defaults={"description": "Categoría por defecto"}
+            )
+            self.category = general
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.name} ({self.brand or 'sin marca'})"
+
     
 class DeliveryZone(models.Model):
     name = models.CharField(max_length=100)

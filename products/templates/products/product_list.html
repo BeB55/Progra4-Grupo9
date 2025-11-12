@@ -1,44 +1,91 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
+
 <div class="container mt-5">
-    <div class="row justify-content-end">
-    <div class="col-4">
-      <h2 class="col align-self-center">Productos</h2>
+  <!-- Título de la página -->
+  <div class="row mb-4">
+    <div class="col text-center">
+      <h2 class="fw-bold">Productos</h2>
     </div>
-    <div class="col-4">
-      {% if user.is_authenticated %}
-        <a href="{% url 'products:product_create' %}" class="btn btn-success mb-3">➕ Nuevo producto</a>
-      {% endif %}
-    </div>
-    </div>
+  </div>
 
-  <div class="row">
-    {% for producto in products %}
-    <div class="col-md-4 mb-4">
-      <div class="card h-100 shadow-sm">
-
-        {% if producto.image %}
-          <img src="{{ producto.image.url }}" class="card-img-top" style="max-width:400px; height:auto;" alt="{{ producto.product_name }}">
-        {% else %}
-          <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="Sin imagen">
-        {% endif %}
-
-        <div class="card-body">
-          <h4 class="card-title">{{ producto.product_name }}</h4>
-          <p class="card-text">{{ producto.description|truncatewords:20 }}</p>
-          <p class="text-success fw-bold">${{ producto.price }}</p>
-          <p><strong>Publicado por:</strong> {{ producto.user.username }}</p>
-          <a href="{% url 'products:product_detail' producto.id %}" class="btn btn-success">Ver</a>
-        </div>
+<div class="container mt-5">
+  <div class="row mb-4 align-items-center">
+    <!-- Botón de filtros -->
+    <div class="col-md-3">
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownCategorias" data-bs-toggle="dropdown" aria-expanded="false">
+          Filtros
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
+          <li>
+            <a class="dropdown-item {% if not selected_category %}active{% endif %}" 
+               href="{% url 'products:product_list' %}">
+               Todas
+            </a>
+          </li>
+          {% for cat in categories %}
+            <li>
+              <a class="dropdown-item {% if selected_category == cat.id|stringformat:'s' %}active{% endif %}" 
+                 href="?category={{ cat.id }}">
+                 {{ cat.name }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
-    {% empty %}
-    <div class="col-12 text-center">
-      <p>No hay productos disponibles por el momento ¡Perdón!</p>
+
+    <!-- Barra de búsqueda centrada -->
+    <div class="col-md-6 d-flex justify-content-center">
+      <form method="get" class="d-flex mx-auto" style="max-width: 500px; width: 100%;">
+        {% if selected_category %}
+          <input type="hidden" name="category" value="{{ selected_category }}">
+        {% endif %}
+        <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..." value="">
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+      </form>
     </div>
+
+    <!-- Botón "Nuevo producto" a la derecha -->
+    <div class="col-md-3 text-end">
+      {% if user.is_authenticated %}
+        <a href="{% url 'products:product_create' %}" class="btn btn-success">
+          ➕ Nuevo producto
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Lista de productos -->
+  <div class="row">
+    {% for producto in products %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          {% if producto.image %}
+            <img src="{{ producto.image.url }}" class="card-img-top" style="max-width:400px; height:auto;" alt="{{ producto.name }}">
+          {% else %}
+            <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="Sin imagen">
+          {% endif %}
+
+          <div class="card-body">
+            <h5 class="card-title">{{ producto.name }}</h5>
+            <p class="card-text">{{ producto.description|truncatewords:20 }}</p>
+            <p class="fw-bold text-success">${{ producto.price }}</p>
+            <p class="mb-1"><strong>Stock:</strong> {{ producto.stock }}</p>
+            <p><strong>Categoría:</strong> {{ producto.category.name }}</p>
+            <p><strong>Publicado por:</strong> {{ producto.user.username }}</p>
+            <a href="{% url 'products:product_detail' producto.id %}" class="btn btn-outline-primary">Ver más</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12 text-center">
+        <p>No hay productos disponibles por el momento ¡Perdón!</p>
+      </div>
     {% endfor %}
   </div>
 </div>
+
 {% endblock %}

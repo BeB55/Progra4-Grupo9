@@ -4,8 +4,16 @@ from .models import Product
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['product_name', 'description', 'brand', 'price', 'image']
-
+        fields = ['name', 'description', 'brand', 'price', 'image', 'category', 'stock']
+        labels = {
+            'name': 'Nombre del producto',
+            'description': 'Descripción',
+            'brand': 'Marca',
+            'price': 'Precio',
+            "stock": "Stock disponible",
+            'image': 'Agregar imagen',
+            'category': 'Categoría',
+        }
     def clean_image(self):
             image = self.cleaned_data.get('image')
             if image:
