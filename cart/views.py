@@ -19,12 +19,24 @@ def add_to_cart(request, product_id):
     item, created = CartItem.objects.get_or_create(cart=cart, product=product)
 
     if not created:
-        item.quantity += 1
-        item.save()
-    
-    messages.success(request, f"✅ '{product.product_name}' se añadió al carrito correctamente.")
+        if item.quantity < product.stock: 
+            item.quantity += 1
+            item.save()
+            messages.success(request, f"✅ '{product.name}' se añadió al carrito correctamente.")
+            return redirect('products:product_detail', product_id=product.id)
+        else:
+            messages.error(request, f"❌ No hay más stock disponible de '{product.name}'.")
+            return redirect('products:product_detail', product_id=product.id)
+    else:
+        if product.stock > 0:
+            item.quantity = 1
+            item.save()
+            messages.success(request, f"✅ '{product.name}' se añadió al carrito correctamente.")
+            return redirect('products:product_detail', product_id=product.id)
+        else:
+            messages.error(request, f"❌ '{product.name}' no tiene stock disponible.")
+            return redirect('products:product_detail', product_id=product.id)
 
-    return redirect('products:product_detail', product_id=product.id)
 
 
 # ver carrito
@@ -61,16 +73,28 @@ def remove_from_cart(request, item_id):
 @login_required
 def update_quantity(request, item_id, accion):
     item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    product = item.product
+
     if accion == "sumar":
-        item.quantity += 1
-        item.save()
+        if item.quantity < product.stock:
+            item.quantity += 1
+            item.save()
+            messages.success(request, f"✅ Se aumentó la cantidad de '{product.name}' en el carrito.")
+            return redirect("carrito:view_cart")
+        else:
+            messages.error(request, f"❌ No hay más stock disponible para '{product.name}'.")
+            return redirect("carrito:view_cart")
+
     elif accion == "restar":
         item.quantity -= 1
         if item.quantity <= 0:
             item.delete()
+            messages.info(request, f"ℹ️ '{product.name}' fue eliminado del carrito.")
             return redirect("carrito:view_cart")
         item.save()
-    return redirect("carrito:view_cart")
+        messages.success(request, f"✅ Se redujo la cantidad de '{product.name}' en el carrito.")
+        return redirect("carrito:view_cart")
+
 
 @login_required
 def create_preference(request):
@@ -84,7 +108,7 @@ def create_preference(request):
     items = []
     for item in cart.items.all():
         items.append({
-            "title": item.product.product_name,
+            "title": item.product.name,
             "quantity": item.quantity,
             "unit_price": float(item.product.price),
             "currency_id": "ARS",

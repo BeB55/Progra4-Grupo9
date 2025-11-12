@@ -2,12 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.conf import settings
 from rest_framework import viewsets
-from .models import Product, DeliveryZone, Delivery
+from .models import Product, DeliveryZone, Delivery, Category
 from .utils import calcular_ruta, calcular_costo_delivery
 from .forms import ProductForm
 from .serializers import ProductSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
@@ -26,52 +28,63 @@ def product_create(request):
             product.user = request.user
             product.save()
             return redirect('products:product_list')
-
     else:
         form = ProductForm()
     return render(request, 'products/products_form.html', {'form': form})
-    
-
-def perform_create(self, serializer):
-    serializer.save(user=self.request.user)
 
 def home(request):
     return render(request, "products/home.html")
 
 def product_list(request):
+    category_id = request.GET.get("category")
+    query = request.GET.get("q")  
     products = Product.objects.all()
-    return render(request, 'products/product_list.html', {'products': products})
+    categories = Category.objects.all()
+
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) |
+            Q(brand__icontains=query) |
+            Q(description__icontains=query)
+        )
+
+    if category_id:
+        products = products.filter(category_id=category_id)
+
+    return render(request, 'products/product_list.html', {
+        'products': products,
+        'categories': categories,
+        'selected_category': category_id,
+        'query': query,
+    })
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'products/product_detail.html', {'product': product})
-        
-# Editar producto
+
 @login_required
 def product_edit(request, pk):
-    product = get_object_or_404(Product, pk=pk, seller=request.user)
+    product = get_object_or_404(Product, pk=pk, user=request.user)
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            return redirect("product-list")
+            return redirect("products:product_list")
     else:
         form = ProductForm(instance=product)
     return render(request, "products/products_form.html", {"form": form})
 
-# Eliminar producto
 @login_required
 def product_delete(request, pk):
-    product = get_object_or_404(Product, pk=pk, seller=request.user)
+    product = get_object_or_404(Product, pk=pk, user=request.user)
     if request.method == "POST":
         product.active = False
         product.save()
-        return redirect("product-list")
+        return redirect("products:product_list")
     return render(request, "products/product_confirm_delete.html", {"product": product})
 
 def about(request):
     return render(request, "products/about.html")
-
 
 def crear_pedido(request):
     if request.method == 'POST':
@@ -92,7 +105,7 @@ def crear_pedido(request):
             )
 
             Delivery.objects.create(
-                customer_address="",  # ya no pedís dirección manual
+                customer_address="",
                 customer_lat=customer_lat,
                 customer_lng=customer_lng,
                 distance_km=ruta['distance_km'],
@@ -102,13 +115,11 @@ def crear_pedido(request):
             )
 
         return JsonResponse({
-    "success": True,
-    "costo": round(float(costo), 2),
-    "distancia_km": round(float(ruta['distance_km']), 2),
-    "geometry": ruta['geometry'],
-})
-
-
+            "success": True,
+            "costo": round(float(costo), 2),
+            "distancia_km": round(float(ruta['distance_km']), 2),
+            "geometry": ruta['geometry'],
+        })
 
 def calcular_delivery(request):
     lat_tienda, lng_tienda = -34.6037, -58.3816
@@ -131,7 +142,6 @@ def calcular_delivery(request):
         })
     return JsonResponse({"success": False, "error": "No se pudo calcular ruta"})
 
-
 def mapa_delivery(request):
     lat_origen, lng_origen = -34.6037, -58.3816  # Obelisco
     lat_destino, lng_destino = -34.6200, -58.4400  # Almagro
@@ -146,6 +156,3 @@ def mapa_delivery(request):
         "origen": [lat_origen, lng_origen],
         "destino": [lat_destino, lng_destino],
     })
-
-# lo de MP
-# 
