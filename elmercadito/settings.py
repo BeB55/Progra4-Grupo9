@@ -1,8 +1,8 @@
 import os
+import mercadopago
 from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
-from django.conf import settings
 from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
@@ -12,6 +12,17 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR: 'danger',
 }
+
+GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
+GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
+
+ORS_API_KEY = os.getenv("ORS_API_KEY")
+
+MERCADOPAGO_ACCESS_TOKEN = os.getenv("MERCADOPAGO_ACCESS_TOKEN")
+MERCADOPAGO_PUBLIC_KEY = os.getenv("MERCADOPAGO_PUBLIC_KEY")
+
+# Agrega credenciales
+sdk = mercadopago.SDK("TEST_ACCESS_TOKEN")
 
 load_dotenv()
 
@@ -112,8 +123,8 @@ WSGI_APPLICATION = 'elmercadito.wsgi.application'
 SOCIALACCOUNT_PROVIDERS = {
      'google': {
         "APP": {
-             "client_id": config("GOOGLE_OAUTH_CLIENT_ID"),
-             "secret": config("GOOGLE_OAUTH_CLIENT_SECRET"),
+             "client_id": "GOOGLE_OAUTH_CLIENT_ID",
+             "secret": "GOOGLE_OAUTH_CLIENT_SECRET",
      } ,   
          'SCOPE': ['profile','email'],
          'AUTH_PARAMS': {'access_type': 'online'},

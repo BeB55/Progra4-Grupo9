@@ -61,12 +61,7 @@ python manage.py runserver
 
 ✅ Panel de administración de Django
 
-📦 Deploy
-El proyecto está preparado para deploy en Render o Heroku:
-
 requirements.txt → dependencias
-
-Procfile → comando de inicio con gunicorn
 
 collectstatic → gestión de archivos estáticos
 
