@@ -2,4 +2,12 @@
 2. Chatbot de ayuda (u otra cosa)
 3. Filtro y busqueda de productos
 4. Comparador de precios (boton)
-5. Deployarlo a render 
+5. Agregar un cartel que te avise si te equivocaste de usuario/contraseña
+    Y agregar un cartel que te indique si, al registrar un usuario, si ya existe
+    un usuario con el mismo nombre, o e-mail
+6. Agregar lo del static en Render para que se vean las imagenes
+7. Mercado Pago no funciona en Render, revisar (estaba tan feliz.........)
+
+
+# LISTO! Deployarlo a render 
+# LISTO! Conectar con Mercado Pago

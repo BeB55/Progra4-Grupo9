@@ -5,17 +5,31 @@
 
 {% block content %}
 <div class="text-center mt-5">
-    <h1 class="display-4 mb-4">Bienvenido a El Mercadito :D</h1>
-
+  <h1 class="display-4 mb-4">Bienvenido a El Mercadito :D</h1>
     {% if not user.is_authenticated %}
-        <p class="lead">Por favor, inicia sesión o regístrate para continuar.</p>
-        <a href="{% provider_login_url 'google' %}" class="btn btn-success btn-lg mt-3">
-            Entrar con Google
-        </a>
+      <p>Iniciá sesión para empezar a comprar y vender en Mercadito.</p>
+      <a href="{% url 'login' %}" class="btn btn-success btn-lg mt-3">Ingresá con tu cuenta</a>
+      <h3>O ingresa con</h3>
+      <a href="{% provider_login_url 'google' %}" class="btn btn-success btn-lg mt-3">Ingresá con Google
+        <img src="{% static 'img/google.svg' %}" alt="Google" class="social-logo">
+      </a>
+      <!-- Links para resetear contraseña y registrarse -->
+      <span class="auth-links">
+          <br>
+          <a href="{% url 'account_reset_password' %}">¿Olvidaste tu contraseña?</a> <br>
+          ¿No tenés cuenta?
+          <a href="{% url 'account_signup' %}">Registrate</a>
+      </span>
+
+
+    <div class="social-login">
+      <a href="{% provider_login_url 'google' %}" role="button" class="btn-social">
+        <i class="fab fa-google"></i>
+      </a>
     {% else %}
-        <p class="lead">¡Hola {{ user.username }}! Ya estás logueado. ¿Qué vas a hacer ahora?</p>
+        <p class="lead">¡Hola {{ user.username }}! Ya estás logueado.</p>
     {% endif %}
-</div>
+    </div>
 
 <div id="carouselCompact" class="carousel slide mt-5 mx-auto" data-bs-ride="carousel" style="max-width:600px;">
   <div class="carousel-inner">
