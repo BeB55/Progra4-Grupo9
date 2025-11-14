@@ -38,6 +38,18 @@
       </a>
     </div>
 
+    <div>
+      <form method="get" class="d-flex mx-auto" style="max-width: 400px; width: 100%;">
+        {% if selected_category %}
+          <input type="hidden" name="category" value="{{ selected_category }}">
+        {% endif %}
+        <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..." value="">
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+      </form>
+    </div>
+
+
+
     <!-- Enlaces + mini preview -->
     <div class="d-flex align-items-center gap-3">
 
