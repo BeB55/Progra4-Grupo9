@@ -1,40 +1,70 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+
 {% block content %}
-  <h1>Añadir producto</h1>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    <p>
-      {{ form.name.label_tag }}<br>
-      {{ form.name }}
-      {{ form.name.errors }}
-    </p>
-    <p>
-      {{ form.description.label_tag }}<br>
-      {{ form.description }}
-    </p>
-    <p>
-      {{ form.price.label_tag }}<br>
-      {{ form.price }}
-    </p>
-    <p>
-      {{ form.stock.label_tag }}<br>
-      {{ form.stock }}
-      {{ form.stock.errors }}
-    </p>
-    <p>
-      {{ form.brand.label_tag }}<br>
-      {{ form.brand }}
-    </p>
-    <p>
-      {{ form.image.label_tag }}<br>
-      {{ form.image }}
-      {{ form.image.errors }}
-    </p>
-    <p>
-      {{ form.category.label_tag }}<br>
-      {{ form.category }}
-    </p>
-    <button type="submit">Guardar</button>
-  </form>
+
+<section style="padding: 20px 20px; background-color: #f8f9fa; color: #000000;">
+  
+  <div style="text-align: right; margin-top: 30px;">
+    <a href="{% url 'home' %}" class="btn btn-outline-success rounded-pill">← Volver al inicio</a>
+  </div>
+
+  <div style="max-width: 800px; margin: auto;">
+    <h2 style="text-align: center;">Añadir producto</h2>
+    <hr style="width: 50%; margin: 10px auto 10px;">
+    
+    <div class="container mt-3">
+      <div class="row mb-4">
+        <div class="col text-center">
+
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          {{ form.non_field_errors }}
+
+          <div class="field">
+            <label for="name" class="form-label fw-bold">Nombre del producto</label>
+            {% render_field form.name class="input-field" %}
+          </div>
+
+          <div class="field">
+            <label for="description" class="form-label fw-bold">Descripción</label>
+            {% render_field form.description class="desc-field" %}
+          </div>
+
+          <div class="field">
+            <label for="price" class="form-label fw-bold">Precio</label>
+            {% render_field form.price class="input-field" %}
+          </div>
+
+          <div class="field">
+            <label for="stock" class="form-label fw-bold">Stock disponible</label>
+            {% render_field form.stock class="input-field" %}
+          </div>
+
+          <div class="field">
+            <label for="brand" class="form-label fw-bold">Marca</label>
+            {% render_field form.brand class="input-field" %}
+          </div>
+
+          <div class="field">
+            <label for="image" class="form-label fw-bold">Añadir una imagen</label>
+            {{ form.image }}
+            {{ form.image.errors }}
+          </div>
+
+          <div class="field">
+            <label for="category" class="form-label fw-bold">Categoria</label>
+            {% render_field form.category class="input-field" %}
+          </div>
+
+          <button id="submit-btn" type="submit">Guardar</button>
+        </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
 {% endblock %}

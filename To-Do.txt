@@ -7,6 +7,7 @@
     un usuario con el mismo nombre, o e-mail
 6. Agregar lo del static en Render para que se vean las imagenes
 7. Mercado Pago no funciona en Render, revisar (estaba tan feliz.........)
+8. Agregar funcion para cambiar de contraseña, y poner el link en Profile
 
 
 # LISTO! Deployarlo a render 

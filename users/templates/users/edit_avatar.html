@@ -1,10 +1,26 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
+{% load static %}
 
 {% block content %}
-<h2>Editar foto de perfil</h2>
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Guardar</button>
-</form>
+
+<section style="padding: 20px 20px; background-color: #f8f9fa; color: #000000;">
+
+  <div style="text-align: right; margin-top: 30px;">
+    <a href="{% url 'profile' %}" class="btn btn-outline-success rounded-pill">← Volver a mi perfil</a>
+  </div>
+
+    <div style="max-width: 800px; margin: auto;">
+        <h2 style="text-align: center;">Editar foto de perfil</h2>
+        <hr style="width: 50%; margin: 10px auto 10px;">
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="id_avatar" class="form-label fw-bold">Seleccionar nueva foto</label>
+            {{ form.avatar }}
+            <button id="submit-btn" type="submit" >Guardar</button>
+        </form>
+
+    </div>
+</section>
 {% endblock %}

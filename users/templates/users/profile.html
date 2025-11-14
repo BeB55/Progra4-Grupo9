@@ -1,7 +1,39 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
+{% load static %}
 
 {% block content %}
-<h1>Mi perfil</h1>
-<p>Bienvenido/a, {{ user.username }}.</p>
-<p>Correo electrónico: {{ user.email }}</p>
+<section style="padding: 20px 20px; background-color: #f8f9fa; color: #000000;">
+
+  <div style="text-align: right; margin-top: 30px;">
+    <a href="{% url 'home' %}" class="btn btn-outline-success rounded-pill">← Volver al inicio</a>
+  </div>
+
+  <div style="max-width: 800px; margin: auto;">
+    <div class="container mt-3">
+        <div class="row mb-4">
+            <div class="col text-center">
+                <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'img/default.png' %}{% endif %}"
+                    alt="Avatar"
+                    class="rounded-circle border border-light"
+                    width="150" height="150">
+                <hr style="width: 50%; margin: 10px auto 10px;">
+                <h1>{{ user.username }}</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-around;">
+        <div style="text-align: left;">
+            <p>Correo electrónico: {{ user.email }}</p>
+            <a type="button" class="btn btn-success" href="{% url 'edit_avatar' %}" style="margin: 5px 0px 10px; padding: 5px;">Cambiar foto de perfil</a><br>
+            <a type="button" class="btn btn-success" href="#" style="margin: 5px 0px 10px; padding: 5px;">Cambiar mi contraseña</a><br>
+            <a href="#" class="btn btn-success" style="margin: 5px 0px 10px; padding: 5px;">Mis productos publicados</a> <br>
+            <a href="{% url 'carrito:view_cart' %}" class="btn btn-success" style="margin: 5px 0px 10px; padding: 5px;">Mi carrito</a>
+        </div>
+    </div>
+
+</div>
+</section>
+
 {% endblock %}
