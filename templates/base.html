@@ -4,13 +4,26 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Mercadito{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
+  <style>
+    #navbar-btn{
+      color:#000000;
+      text-decoration: none;
+    }
+    #navbar-btn:hover{
+      border-radius: 5px;
+      background-color: #69BE7C;
+      padding: 10px 10px;
+      transition: all 0.2s ease;
+    }
+  </style>
 </head>
-<body class="bg-dark text-white">
-<nav class="navbar navbar-dark bg-success">
+<body class="bg-white text-dark">
+<nav class="navbar navbar-dark" style="background-color: #69DB7C;">
   <div class="container-fluid d-flex align-items-center justify-content-between">
     <div class="d-flex align-items-center">
       
@@ -27,21 +40,35 @@
 
     <!-- Enlaces + mini preview -->
     <div class="d-flex align-items-center gap-3">
-      <a class="nav-link text-white" href="{% url 'products:product_list' %}">Productos</a>
+
+      <a id="navbar-btn" href="{% url 'home' %}">Inicio</a>      
+      <a id="navbar-btn" href="{% url 'products:about' %}">Sobre nosotros</a>
+      <a id="navbar-btn" href="{% url 'products:product_list' %}">Productos</a>
+
       {% if user.is_authenticated %}
-        <a class="nav-link text-white" href="{% url 'carrito:view_cart' %}">Mi carrito 🛒</a>
-        <a class="nav-link text-white" href="{% url 'logout' %}">Cerrar sesión</a>
 
         <!-- 👉 Mini preview del avatar -->
-        <a href="{% url 'profile' %}">
-          <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'img/default.png' %}{% endif %}"
-               alt="Avatar"
-               class="rounded-circle border border-light"
-               width="35" height="35">
-        </a>
+         <div class="dropdown">
+          <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Mi cuenta
+              <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'img/default.png' %}{% endif %}"
+                alt="Avatar"
+                class="rounded-circle border border-light"
+                width="35" height="35">
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'profile' %}">Ver perfil</a></li>
+            <li><a class="dropdown-item" href="{% url 'carrito:view_cart' %}">Ver carrito</a></li>
+            <li><a class="dropdown-item" href="#">Mis productos</a></li>
+            <li><a class="dropdown-item" href="#">Mis compras</a></li>
+            <li><a class="dropdown-item" href="{% url 'products:mapa_delivery' %}">Seguimiento</a></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+          </ul>
+        </div>
+        
       {% else %}
-        <a class="nav-link text-white" href="{% url 'login' %}">Ingresar</a>
-        <a class="nav-link text-white" href="{% url 'signup' %}">Registrarse</a>
+        <a id="navbar-btn" href="{% url 'login' %}">Ingresar</a>
+        <a id="navbar-btn" href="{% url 'signup' %}">Registrarse</a>
       {% endif %}
     </div>
   </div>
@@ -97,7 +124,6 @@
   </div>
 </div>
 
-<!-- Bootstrap JS (solo una vez) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
