@@ -1,27 +1,55 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% load socialaccount %}
 
 {% block content %}
+<section style="padding: 20px 20px; background-color: #f8f9fa; color: #000000;"></section>
 
-<h2>Registrate</h2>
-<form method="post">
-  {% csrf_token %}
-  <div>
-    {{ form.username.label_tag }}
-    {{ form.username }}
+  <div style="text-align: right; margin-top: 30px;">
+    <a href="{% url 'home' %}" class="btn btn-outline-success rounded-pill">← Volver al inicio</a>
   </div>
-  <div>
-    {{ form.email.label_tag }}
-    {{ form.email }}
-  </div>
-  <div>
-    {{ form.password1.label_tag }}
-    {{ form.password1 }}
-  </div>
-  <div>
-    {{ form.password2.label_tag }}
-    {{ form.password2 }}
-  </div>
-  <button type="submit">Crear cuenta</button>
-</form>
 
+  <div style="max-width: 800px; margin: auto;">
+  <h2 style="text-align: center;">Registrate</h2>
+  <hr style="width: 50%; margin: 10px auto 10px;">
+
+    <div class="container mt-3">
+      <div class="row mb-4">
+        <div class="col text-center">
+
+          <form method="post">
+            {% csrf_token %}
+
+              <div class="field">
+                <label for="username">Nombre de usuario</label>
+                {% render_field form.username class="input-field" %}
+              </div>
+
+              <div class="field">
+                <label for="email">Correo electrónico</label>
+                {% render_field form.email class="input-field" %}
+              </div>
+
+              <div class="field">
+                <label for="password1">Contraseña</label>
+                {% render_field form.password1 class="input-field" %}
+              </div>
+
+              <div class="field">
+                <label for="password2">Repetir contraseña</label>
+                {% render_field form.password2 class="input-field" %}
+              </div>
+
+            <button id="submit-btn" type="submit">Crear cuenta</button>
+          </form>
+          <p class="auth-links">
+            ¿Ya tenés una cuenta?
+            <a href="{% url 'login' %}">Iniciá sesión</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}

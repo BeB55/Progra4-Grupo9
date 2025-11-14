@@ -9,8 +9,6 @@ __pycache__/
 
 # Archivos de configuración local
 *.env
-*.sqlite3
-db.sqlite3
 .env
 
 # Archivos de sistema
@@ -23,3 +21,4 @@ Thumbs.db
 # Archivos de migración
 */migrations/*.py
 */migrations/*.pyc
+
