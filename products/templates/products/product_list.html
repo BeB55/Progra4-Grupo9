@@ -3,43 +3,10 @@
 {% block content %}
 
 <div class="container mt-5">
-  <!-- Título de la página -->
-  <div class="row mb-4">
-    <div class="col text-center">
-      <h2 class="fw-bold">Productos</h2>
-      <hr>
-    </div>
-  </div>
 
-<div class="container mt-5">
-  <div class="row mb-4 align-items-center">
-    <!-- Botón de filtros -->
-    <div class="col-md-3">
-      <div class="dropdown">
-        <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownCategorias" data-bs-toggle="dropdown" aria-expanded="false">
-          Filtros
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
-          <li>
-            <a class="dropdown-item {% if not selected_category %}active{% endif %}" 
-               href="{% url 'products:product_list' %}">
-               Todas
-            </a>
-          </li>
-          {% for cat in categories %}
-            <li>
-              <a class="dropdown-item {% if selected_category == cat.id|stringformat:'s' %}active{% endif %}" 
-                 href="?category={{ cat.id }}">
-                 {{ cat.name }}
-              </a>
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-
-    <!-- Botón "Nuevo producto" a la derecha -->
-    <div class="col-md-3 text-end">
+  <!-- Botón "Nuevo producto" alineado a la derecha -->
+  <div class="row mb-3">
+    <div class="col d-flex justify-content-end">
       {% if user.is_authenticated %}
         <a href="{% url 'products:product_create' %}" class="btn btn-success">
           ➕ Nuevo producto
@@ -48,33 +15,85 @@
     </div>
   </div>
 
-  <!-- Lista de productos -->
-  <div class="row">
-    {% for producto in products %}
-      <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm">
-          {% if producto.image %}
-            <img src="{{ producto.image.url }}" class="card-img-top" style="max-width:400px; height:auto;" alt="{{ producto.name }}">
-          {% else %}
-            <img src="{% static 'img/placeholder.png' %}" class="card-img-top" alt="Sin imagen">
-          {% endif %}
+  <!-- Título -->
+  <div class="row mb-4">
+    <div class="col text-center">
+      <h2 class="fw-bold">Productos</h2>
+      <hr style="width: 50%; margin: 10px auto;">
+    </div>
+  </div>
 
-          <div class="card-body">
-            <h5 class="card-title">{{ producto.name }}</h5>
-            <p class="card-text">{{ producto.description|truncatewords:20 }}</p>
-            <p class="fw-bold text-success">${{ producto.price }}</p>
-            <p class="mb-1"><strong>Stock:</strong> {{ producto.stock }}</p>
-            <p><strong>Categoría:</strong> {{ producto.category.name }}</p>
-            <p><strong>Publicado por:</strong> {{ producto.user.username }}</p>
-            <a href="{% url 'products:product_detail' producto.id %}" class="btn btn-outline-primary">Ver más</a>
-          </div>
+  <!-- CONTENEDOR PRINCIPAL: FILTROS + PRODUCTOS -->
+  <div class="row">
+
+    <!-- COLUMNA DE FILTROS -->
+    <div class="col-md-3">
+      <div class="p-3 border rounded shadow-sm">
+        <h4 class="mb-3 text-center">Filtros</h4>
+
+        <div class="dropdown w-100">
+          <button class="btn btn-outline-success dropdown-toggle w-100" 
+                  type="button" 
+                  id="dropdownCategorias" 
+                  data-bs-toggle="dropdown">
+            Categorías
+          </button>
+
+          <ul class="dropdown-menu w-100" aria-labelledby="dropdownCategorias">
+            <li>
+              <a class="dropdown-item {% if not selected_category %}active{% endif %}"
+                 href="{% url 'products:product_list' %}">
+                 Todas
+              </a>
+            </li>
+
+            {% for cat in categories %}
+              <li>
+                <a class="dropdown-item {% if selected_category == cat.id|stringformat:'s' %}active{% endif %}"
+                   href="?category={{ cat.id }}">
+                  {{ cat.name }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
         </div>
       </div>
-    {% empty %}
-      <div class="col-12 text-center">
-        <p>No hay productos disponibles por el momento ¡Perdón!</p>
+    </div>
+
+    <!-- GRID DE PRODUCTOS -->
+    <div class="col-md-9">
+
+      <div class="row">
+        {% for producto in products %}
+          <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+
+              {% if producto.image %}
+                <img src="{{ producto.image.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="{{ producto.name }}">
+              {% else %}
+                <img src="{% static 'img/placeholder.png' %}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="Sin imagen">
+              {% endif %}
+
+              <div class="card-body">
+                <h5 class="card-title">{{ producto.name }}</h5>
+                <p class="card-text">{{ producto.description|truncatewords:20 }}</p>
+                <p class="fw-bold text-success">${{ producto.price }}</p>
+                <a href="{% url 'products:product_detail' producto.id %}" class="btn btn-outline-primary w-100">
+                  Ver más
+                </a>
+              </div>
+            </div>
+          </div>
+
+        {% empty %}
+          <div class="col-12 text-center">
+            <p>No hay productos disponibles por el momento ¡Perdón!</p>
+          </div>
+        {% endfor %}
       </div>
-    {% endfor %}
+
+    </div>
+
   </div>
 </div>
 
