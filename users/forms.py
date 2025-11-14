@@ -33,3 +33,13 @@ class AvatarForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ['avatar']
+        widgets = {
+            'avatar': forms.FileInput(attrs={'class': 'form-control'})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Evita que Django genere el checkbox "Clear"
+        if hasattr(self.fields['avatar'], 'widget'):
+            self.fields['avatar'].widget.clear_checkbox = False
+            self.fields['avatar'].widget.template_name = 'django/forms/widgets/file.html'
