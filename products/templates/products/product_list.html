@@ -7,6 +7,7 @@
   <div class="row mb-4">
     <div class="col text-center">
       <h2 class="fw-bold">Productos</h2>
+      <hr>
     </div>
   </div>
 
@@ -15,7 +16,7 @@
     <!-- Botón de filtros -->
     <div class="col-md-3">
       <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownCategorias" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownCategorias" data-bs-toggle="dropdown" aria-expanded="false">
           Filtros
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
@@ -35,17 +36,6 @@
           {% endfor %}
         </ul>
       </div>
-    </div>
-
-    <!-- Barra de búsqueda centrada -->
-    <div class="col-md-6 d-flex justify-content-center">
-      <form method="get" class="d-flex mx-auto" style="max-width: 500px; width: 100%;">
-        {% if selected_category %}
-          <input type="hidden" name="category" value="{{ selected_category }}">
-        {% endif %}
-        <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..." value="">
-        <button class="btn btn-outline-success" type="submit">Buscar</button>
-      </form>
     </div>
 
     <!-- Botón "Nuevo producto" a la derecha -->
