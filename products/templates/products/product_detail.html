@@ -6,53 +6,70 @@
 
 <section style="padding: 20px 20px; background-color: #f8f9fa; color: #000000;">
 
+  <!-- Botones eliminar, editar, volver -->
   <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
-
     <div>
-      <a href="{% url 'products:product_delete' %}" class="btn btn-danger rounded-pill">Eliminar producto</a>
-      <a href="{% url 'products:product_edit' %}" class="btn btn-primary rounded-pill">Editar producto</a>
+      <!-- Botón que abre el modal -->
+      {% if product.user == request.user %}
+      <!-- Botón que abre el modal -->
+      <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+          Eliminar
+      </button>
+      <a href="{% url 'products:product_edit' product.id %}" 
+          class="btn btn-primary rounded-pill">
+          Editar producto
+      </a>
+      {% endif %}
+      <!-- <a href="{% url 'products:product_delete' product.id %}" 
+        class="btn btn-danger rounded-pill">Eliminar producto</a> -->
+
     </div>
 
     <div>
-      <a href="{% url 'products:product_list' %}" class="btn btn-outline-success rounded-pill">← Volver a Productos</a>
+      <a href="{% url 'products:product_list' %}" 
+        class="btn btn-outline-success rounded-pill">← Volver a Productos</a>
     </div>
-
   </div>
 
+  <!-- Detalles del producto -->
+  <div class="container mt-3">
+    <div class="row mb-4">
+      <div class="col text-cente">
 
+        <div class="row justify-content-around">
+          <div class="col-4">
+            <h4>{{ product.name }}</h4>
+            <h1 style="color: rgb(70, 175, 82);">${{ product.price }}</h1>
+            <p><strong> Marca: </strong>{{ product.brand }}</p>
+            <p><strong>Stock disponible:</strong> {{ product.stock }}</p>
+            <p><strong>Publicado por:</strong> {{ product.user.username }}</p>
+            <a href="{% url 'carrito:add_to_cart' product.id %}" 
+              class="btn btn-success mt-3 btn-lg">Agregar al carrito 🛒</a>
+          </div>
 
-
-    <div class="container mt-3">
-      <div class="row mb-4">
-        <div class="col text-cente">
-
-          <div class="row justify-content-around">
-            <div class="col-4">
-              <h4>{{ product.name }}</h4>
-              <h1 style="color: rgb(70, 175, 82);">${{ product.price }}</h1>
-              <p><strong> Marca: </strong>{{ product.brand }}</p>
-              <p><strong>Stock disponible:</strong> {{ product.stock }}</p>
-              <p><strong>Publicado por:</strong> {{ product.user.username }}</p>
-              <a href="{% url 'carrito:add_to_cart' product.id %}" 
-                class="btn btn-success mt-3 btn-lg">Agregar al carrito 🛒</a>
-            </div>
-
-            <div class="col-4">
-              {% if product.image %}
-                <div>
-                  <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width:400px; height:auto;">
-                </div>
-              {% else %}
-                  <img src="{% static 'img/placeholder.png' %}" alt="{{ product.name }}" style="max-width:350px; height:auto;">
-                  <span>No hay imagen disponible</span>
-              {% endif %}
-            </div>
+          <div class="col-4">
+            {% if product.image %}
+              <div>
+                <img src="{{ product.image.url }}" 
+                    alt="{{ product.name }}" 
+                    style="max-width:400px; height:auto;">
+              </div>
+            {% else %}
+              <div>
+                <img src="{% static 'img/placeholder.png' %}" 
+                    alt="{{ product.name }}" 
+                    style="max-width:350px; height:auto;">
+                <span>No hay imagen disponible</span>
+              </div>
+            {% endif %}
+          </div>
 
           </div>
         </div>
       </div>
     </div>
   
+    <!-- Descripción -->
     <div>
       <h5>Descripción del producto</h5>
       <hr style="width: 30%; margin: 10px 0px 10px;"> 
@@ -61,5 +78,32 @@
 
   </div>
 </section>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Eliminar producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>¿Seguro que querés eliminar <strong>{{ product.name }}</strong>?</p>
+      </div>
+
+      <div class="modal-footer">
+        <form method="post" action="{% url 'products:product_delete' product.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 {% endblock %}
