@@ -65,24 +65,27 @@
 
       <div class="row">
         {% for producto in products %}
-          <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
+          <div class="col-md-4 mb-4"  id="product-card">
 
-              {% if producto.image %}
-                <img src="{{ producto.image.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="{{ producto.name }}">
-              {% else %}
-                <img src="{% static 'img/placeholder.png' %}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="Sin imagen">
-              {% endif %}
+            <a href="{% url 'products:product_detail' producto.id %}" style="text-decoration: none;">
+              <div class="card h-100 shadow-sm">
 
-              <div class="card-body">
-                <h5 class="card-title">{{ producto.name }}</h5>
-                <p class="card-text">{{ producto.description|truncatewords:20 }}</p>
-                <p class="fw-bold text-success">${{ producto.price }}</p>
-                <a href="{% url 'products:product_detail' producto.id %}" class="btn btn-outline-primary w-100">
-                  Ver más
-                </a>
+                {% if producto.image %}
+                  <img src="{{ producto.image.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="{{ producto.name }}">
+                {% else %}
+                  <img src="{% static 'img/placeholder.png' %}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="Sin imagen">
+                {% endif %}
+
+                <div class="card-body">
+                  <h5 class="card-title">{{ producto.name }}</h5>
+                  <p class="fw-bold text-success">${{ producto.price }}</p>
+                  <a href="{% url 'products:product_detail' producto.id %}" class="btn btn-outline-success w-100">
+                    Ver más
+                  </a>
+                </div>
               </div>
-            </div>
+            </a>
+
           </div>
 
         {% empty %}

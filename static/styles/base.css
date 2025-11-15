@@ -1,0 +1,61 @@
+body {
+    background: red !important;
+}
+
+#product-card{
+    padding: 20px;
+    border: 1px solid #ccc;
+    transition: box-shadow 0.3s ease-in-out; /* Smooth transition for the shadow */
+}
+
+#product-card:hover{
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3); /* Horizontal offset, vertical offset, blur radius, color */
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.input-field {
+    width: 300px;
+    height: 35px;
+    background-color: #dbffe3;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.desc-field{
+    background-color: #dbffe3;
+}
+
+#submit-btn{
+    color:#000000;
+    text-decoration: none;
+    border: none;
+    margin: 10px;
+    padding: 8px 8px;
+}
+
+#submit-btn:hover{
+    border-radius: 5px;
+    background-color: #69BE7C;
+    padding: 10px 10px;
+    transition: all 0.2s ease;
+}
+
+#navbar-btn{
+    color:#000000;
+    text-decoration: none;
+
+}
+#navbar-btn:hover{
+    border-radius: 5px;
+    background-color: #69BE7C;
+    padding: 10px 10px;
+    transition: all 0.2s ease;
+}

@@ -1,19 +1,65 @@
 {% extends "base.html" %}
-{% block content %}
-  <h1>{{ product.product_name }}</h1>
-  <p>{{ product.description }}</p>
-  <p>Precio: ${{ product.price }}</p>
-  <p>Marca: {{ product.brand }}</p>
-  <p><strong>Stock disponible:</strong> {{ product.stock }}</p>
-  <p><strong>Publicado por:</strong> {{ product.user.username }}</p>
+{% load widget_tweaks %}
+{% load static %}
 
-  {% if product.image %}
+{% block content %}
+
+<section style="padding: 20px 20px; background-color: #f8f9fa; color: #000000;">
+
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+
     <div>
-      <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width:400px; height:auto;">
+      <a href="{% url 'products:product_delete' %}" class="btn btn-danger rounded-pill">Eliminar producto</a>
+      <a href="{% url 'products:product_edit' %}" class="btn btn-primary rounded-pill">Editar producto</a>
     </div>
-  {% else %}
-    <p>No hay imagen disponible</p>
-  {% endif %}
-  <a href="{% url 'products:product_list' %}" class="btn btn-secondary mt-3">Volver a productos</a>
-  <a href="{% url 'carrito:add_to_cart' product.id %}" class="btn btn-success mt-3">Agregar al carrito 🛒</a>
+
+    <div>
+      <a href="{% url 'products:product_list' %}" class="btn btn-outline-success rounded-pill">← Volver a Productos</a>
+    </div>
+
+  </div>
+
+
+
+
+    <div class="container mt-3">
+      <div class="row mb-4">
+        <div class="col text-cente">
+
+          <div class="row justify-content-around">
+            <div class="col-4">
+              <h4>{{ product.name }}</h4>
+              <h1 style="color: rgb(70, 175, 82);">${{ product.price }}</h1>
+              <p><strong> Marca: </strong>{{ product.brand }}</p>
+              <p><strong>Stock disponible:</strong> {{ product.stock }}</p>
+              <p><strong>Publicado por:</strong> {{ product.user.username }}</p>
+              <a href="{% url 'carrito:add_to_cart' product.id %}" 
+                class="btn btn-success mt-3 btn-lg">Agregar al carrito 🛒</a>
+            </div>
+
+            <div class="col-4">
+              {% if product.image %}
+                <div>
+                  <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width:400px; height:auto;">
+                </div>
+              {% else %}
+                  <img src="{% static 'img/placeholder.png' %}" alt="{{ product.name }}" style="max-width:350px; height:auto;">
+                  <span>No hay imagen disponible</span>
+              {% endif %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div>
+      <h5>Descripción del producto</h5>
+      <hr style="width: 30%; margin: 10px 0px 10px;"> 
+      <p>{{ product.description }}</p>
+    </div>
+
+  </div>
+</section>
+
 {% endblock %}
