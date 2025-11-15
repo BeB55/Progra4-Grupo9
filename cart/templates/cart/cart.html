@@ -51,10 +51,11 @@
       <h4 class="text-start mt-3">Total: ${{ total_general }}</h4>
 
       <div class="d-flex justify-content-between mt-3">
-        <button id="checkout-btn" class="btn btn-primary">Pagar con
+        <a id="checkout-btn" type="button" class="btn btn-primary">
           <img src="{% static 'img/MP.svg' %}" alt="Mercado Pago" style="width: 70px;">
-        </button>
-        <a href="{% url 'carrito:clear_cart' %}" class="btn btn-danger">Vaciar carrito</a>
+          <span>Pagar con Mercado Pago</span>
+        </a>
+        <a href="{% url 'carrito:clear_cart' %}" class="btn btn-danger" style="width: 120px; height: 40px;">Vaciar carrito</a>
       </div>
 
       <script src="https://sdk.mercadopago.com/js/v2"></script>
