@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Eliminar producto{% endblock %}
 
 {% block content %}
-<h2>Eliminar producto</h2>
-<p>¿Seguro querés eliminar "{{ product.title }}"?</p>
+<h2 style="margin: 10px 0px 10px;">Eliminar producto</h2>
+<hr style="width: 30%; margin: 10px 0px 10px;"> 
+<p>¿Seguro que querés eliminar <strong>"{{ product.name }}"</strong> ? <br> Esta acción no se puede deshacer.</p>
 <form method="post">
   {% csrf_token %}
-  <button type="submit" class="btn-primary">Sí, eliminar</button>
-  <a href="{% url 'product-list' %}" class="btn-secondary">Cancelar</a>
+  <a type="submit" class="btn btn-outline-success">Sí, eliminar</a>
+  <a type="button" href="{% url 'products:product_list' %}" class="btn btn-outline-danger">Cancelar</a>
 </form>
 {% endblock %}

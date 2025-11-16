@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.conf import settings
 from rest_framework import viewsets
 from .models import Product, DeliveryZone, Delivery, Category
@@ -38,7 +38,8 @@ def home(request):
 def product_list(request):
     category_id = request.GET.get("category")
     query = request.GET.get("q")  
-    products = Product.objects.all()
+    
+    products = Product.objects.filter(active=True)
     categories = Category.objects.all()
 
     if query:
@@ -58,6 +59,7 @@ def product_list(request):
         'query': query,
     })
 
+
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'products/product_detail.html', {'product': product})
@@ -76,12 +78,18 @@ def product_edit(request, pk):
 
 @login_required
 def product_delete(request, pk):
+    print(">>> LLEGÓ LA VISTA product_delete con método:", request.method)
     product = get_object_or_404(Product, pk=pk, user=request.user)
+
     if request.method == "POST":
+        print(">>> RECIBIDO POST CORRECTAMENTE")
         product.active = False
         product.save()
         return redirect("products:product_list")
-    return render(request, "products/product_confirm_delete.html", {"product": product})
+
+    return redirect("products:product_list")
+
+
 
 def about(request):
     return render(request, "products/about.html")

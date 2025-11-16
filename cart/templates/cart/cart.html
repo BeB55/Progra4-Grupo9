@@ -6,7 +6,8 @@
 <section style="padding: 20px 20px; background-color: #f8f9fa; color: #000000;">
 
   <div style="text-align: right; margin-top: 30px;">
-    <a href="{% url 'products:product_list' %}" class="btn btn-outline-success rounded-pill">← Volver a productos</a>
+    <a href="{% url 'products:product_list' %}" 
+      class="btn btn-outline-success rounded-pill">← Volver a productos</a>
   </div>
 
   <div class="container mt-4">
@@ -16,38 +17,41 @@
     <hr style="width: 50%; margin: 10px auto 10px;">
     </div>
 
-
     {% if items %}
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Producto</th>
-          <th>Precio</th>
-          <th>Cantidad</th>
-          <th>Subtotal</th>
-          <th>Stock</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in items %}
-        <tr>
-          <td>{{ item.product.name }}</td>
-          <td>${{ item.product.price }}</td>
-          <td>
-            <a href="{% url 'carrito:update_quantity' item.id 'restar' %}" class="btn btn-sm btn-outline-secondary">−</a>
-            <span class="mx-2">{{ item.quantity }}</span>
-            <a href="{% url 'carrito:update_quantity' item.id 'sumar' %}" class="btn btn-sm btn-outline-secondary">+</a>
-          </td>
-          <td>${{ item.subtotal }}</td>
-          <td>{{ item.product.stock }}</td>
-          <td>
-            <a href="{% url 'carrito:remove_from_cart' item.id %}" class="btn btn-sm btn-danger">Eliminar</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th>Stock</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          {% for item in items %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td>${{ item.product.price }}</td>
+            <td>
+              <a href="{% url 'carrito:update_quantity' item.id 'restar' %}" 
+                class="btn btn-sm btn-outline-secondary">−</a>
+              <span class="mx-2">{{ item.quantity }}</span>
+              <a href="{% url 'carrito:update_quantity' item.id 'sumar' %}" 
+                class="btn btn-sm btn-outline-secondary">+</a>
+            </td>
+            <td>${{ item.subtotal }}</td>
+            <td>{{ item.product.stock }}</td>
+            <td>
+              <a href="{% url 'carrito:remove_from_cart' item.id %}" 
+                class="btn btn-sm btn-danger">Eliminar</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
       <h4 class="text-start mt-3">Total: ${{ total_general }}</h4>
 
       <div class="d-flex justify-content-between mt-3">
@@ -55,22 +59,24 @@
           <img src="{% static 'img/MP.svg' %}" alt="Mercado Pago" style="width: 70px;">
           <span>Pagar con Mercado Pago</span>
         </a>
-        <a href="{% url 'carrito:clear_cart' %}" class="btn btn-danger" style="width: 120px; height: 40px;">Vaciar carrito</a>
+        <a href="{% url 'carrito:clear_cart' %}" 
+          class="btn btn-danger" 
+          style="width: 120px; height: 40px;">Vaciar carrito</a>
       </div>
 
       <script src="https://sdk.mercadopago.com/js/v2"></script>
       <script>
-      document.getElementById("checkout-btn").addEventListener("click", function() {
-        fetch("{% url 'carrito:crear-preferencia' %}")  // sin product_id
-          .then(res => res.json())
-          .then(data => {
-            if (data.init_point) {
-              window.location.href = data.init_point;
-            } else {
-              alert("Error al iniciar pago");
-              console.error(data);
-            }
-          });
+        document.getElementById("checkout-btn").addEventListener("click", function() {
+          fetch("{% url 'carrito:crear-preferencia' %}")  // sin product_id
+            .then(res => res.json())
+            .then(data => {
+              if (data.init_point) {
+                window.location.href = data.init_point;
+              } else {
+                alert("Error al iniciar pago");
+                console.error(data);
+              }
+        });
       });
       </script>
 

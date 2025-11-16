@@ -121,7 +121,7 @@ def create_preference(request):
             "failure": request.build_absolute_uri(reverse("carrito:pago_fallido")),
             "pending": request.build_absolute_uri(reverse("carrito:pago_pendiente")),
         },
-        "auto_return": "approved",
+        # "auto_return": "approved",
     }
 
     preference = sdk.preference().create(preference_data)
