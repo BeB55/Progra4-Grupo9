@@ -25,7 +25,7 @@ class Product(models.Model):
     brand = models.CharField("Marca", max_length=100, blank=True, null=True)
     description = models.TextField("Descripción", blank=True)
     price = models.DecimalField("Precio", max_digits=10, decimal_places=2, default=0)
-    stock = models.PositiveIntegerField("Stock disponible", default=0)
+    stock = models.PositiveIntegerField("Stock disponible", default=0)  # ✅ solo una vez
     image = models.ImageField("Agregar imagen", upload_to="products/%Y/%m/%d/", blank=True, null=True)
     category = models.ForeignKey(
         "products.Category",
@@ -34,13 +34,11 @@ class Product(models.Model):
         related_name="products",
         null=True, blank=True
     )
-    stock = models.PositiveIntegerField("Stock disponible", default=0)
-    active = models.BooleanField("Activo", default=True)
+    active = models.BooleanField("Activo", default=True)  # ✅ control de visibilidad
     created = models.DateTimeField("Fecha de creación", auto_now_add=True)
     updated = models.DateTimeField("Última actualización", auto_now=True)
 
     def save(self, *args, **kwargs):
-        # Si no se asigna categoría, usar "General"
         if not self.category:
             from products.models import Category
             general, _ = Category.objects.get_or_create(
@@ -52,6 +50,7 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.brand or 'sin marca'})"
+
 
     
 class DeliveryZone(models.Model):
@@ -81,3 +80,16 @@ class Delivery(models.Model):
     def __str__(self):
         return f"Delivery #{self.pk} (status: {self.status})"
 
+class Comment(models.Model):
+    product = models.ForeignKey(Product, related_name="comments", on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    text = models.TextField("Comentario")
+    created_at = models.DateTimeField("Fecha de creación", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Comentario"
+        verbose_name_plural = "Comentarios"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Comentario de {self.user.username} en {self.product.name}"

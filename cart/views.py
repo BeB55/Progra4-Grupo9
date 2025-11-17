@@ -137,9 +137,19 @@ def create_preference(request):
 
 @login_required
 def pago_exitoso(request):
-    # Vaciar el carrito del usuario después del pago exitoso
     cart = Cart.objects.filter(user=request.user).first()
-    if cart:
+    if cart and cart.items.exists():
+        total = sum(item.product.price * item.quantity for item in cart.items.all())
+        order = Order.objects.create(user=request.user, total=total)
+
+        for item in cart.items.all():
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                price=item.product.price
+            )
+
         cart.items.all().delete()
 
     messages.success(request, "✅ ¡Pago realizado con éxito! Gracias por tu compra 💖")

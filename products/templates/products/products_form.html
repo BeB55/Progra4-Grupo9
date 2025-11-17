@@ -58,6 +58,12 @@
             <label for="category" class="form-label fw-bold">Categoria</label>
             {% render_field form.category class="input-field" %}
           </div>
+          <div class="field d-flex align-items-center gap-2 mt-3 mb-3">
+  <label for="id_active" class="form-label fw-bold mb-0">Activo</label>
+  {% render_field form.active class="form-switch form-check-input m-0" id="id_active" %}
+</div>
+
+>
 
           <button id="submit-btn" type="submit">Guardar</button>
         </form>

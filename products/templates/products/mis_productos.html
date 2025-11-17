@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Productos publicados</h2>
+  {% if productos %}
+    <ul class="list-group">
+      {% for p in productos %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            {{ p.name }} - ${{ p.price }} (Stock: {{ p.stock }})<br>
+            <small>Creado: {{ p.created|date:"d/m/Y H:i" }}</small><br>
+            <small>Actualizado: {{ p.updated|date:"d/m/Y H:i" }}</small>
+          </div>
+          <div>
+          {% if p.active %}
+           <a href="{% url 'products:product_detail' p.id %}" class="btn btn-primary btn-sm">
+              Ver producto
+            </a>
+          {% else %}
+            <span class="badge bg-secondary">No disponible</span>
+          {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No publicaste productos todavía.</p>
+  {% endif %}
+</div>
+{% endblock %}
