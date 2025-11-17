@@ -2,6 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from django.contrib.auth.models import User
 
 
 def main():
@@ -20,3 +21,23 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+import os
+from django.contrib.auth.models import User
+
+if os.environ.get('RENDER_SUPERUSER_CREATE') == "1":
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser(
+            username="admin",
+            email="admin@example.com",
+            password="admin123"
+        )
+
+
+if os.environ.get('RENDER_SUPERUSER_CREATE') == "1":
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser(
+            username="admin",
+            email="admin@example.com",
+            password="admin123"
+        )
