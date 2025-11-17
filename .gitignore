@@ -18,10 +18,6 @@ Thumbs.db
 # Archivos de logs
 *.log
 
-# Archivos de migración
-*/migrations/*.py
-*/migrations/*.pyc
-
 staticfiles/
 
 
