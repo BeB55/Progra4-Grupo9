@@ -30,13 +30,14 @@
 
     <!-- Barra de busqueda -->
     <div>
-      <form method="get" class="d-flex mx-auto" style="max-width: 400px; width: 100%;">
+      <form method="get" class="d-flex mx-auto" style="max-width: 400px; width: 100%;" action="{% url 'products:product_list' %}">
         {% if selected_category %}
           <input type="hidden" name="category" value="{{ selected_category }}">
         {% endif %}
-        <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..." value="">
+        <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos o categorías..." value="{{ query|default:'' }}">
         <button class="btn btn-outline-success" type="submit">Buscar</button>
-      </form>
+</form>
+
     </div>
 
     <!-- Enlaces -->
@@ -60,8 +61,8 @@
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{% url 'profile' %}">Ver perfil</a></li>
             <li><a class="dropdown-item" href="{% url 'carrito:view_cart' %}">Ver carrito</a></li>
-            <li><a class="dropdown-item" href="#">Mis productos</a></li>
-            <li><a class="dropdown-item" href="#">Mis compras</a></li>
+            <li><a class="dropdown-item" href="{% url 'products:mis_productos' %}">Mis productos</a></li>
+            <li><a class="dropdown-item" href="{% url 'orders:mis_compras' %}">Mis compras</a></li>
             <li><a class="dropdown-item" href="{% url 'products:mapa_delivery' %}">Seguimiento</a></li>
             <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
           </ul>
@@ -113,7 +114,6 @@
                width="80" height="80">
         {% endif %}
         <p class="mt-2">{{ request.user.username }}</p>
-        <a href="{% url 'edit_avatar' %}" class="btn btn-sm btn-outline-light mt-2">Editar foto</a>
       </div>
     {% endif %}
 

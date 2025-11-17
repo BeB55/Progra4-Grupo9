@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Compras</h2>
+
+  <!-- Dropdown de filtro -->
+  <div class="dropdown mb-3">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+      Filtrar por estado
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+      <li><a class="dropdown-item" href="{% url 'orders:mis_compras' %}">Todas</a></li>
+      <li><a class="dropdown-item" href="{% url 'orders:mis_compras' %}?estado=pending">Pendientes</a></li>
+      <li><a class="dropdown-item" href="{% url 'orders:mis_compras' %}?estado=paid">Pagadas</a></li>
+      <li><a class="dropdown-item" href="{% url 'orders:mis_compras' %}?estado=shipped">Enviadas</a></li>
+      <li><a class="dropdown-item" href="{% url 'orders:mis_compras' %}?estado=delivered">Entregadas</a></li>
+    </ul>
+  </div>
+
+  {% if orders %}
+    <ul class="list-group">
+      {% for order in orders %}
+        <li class="list-group-item">
+          <strong>Compra del {{ order.created_at|date:"d/m/Y H:i" }}</strong>  
+          - Total: ${{ order.total }}<br>
+          <span class="badge 
+            {% if order.status == 'pending' %} bg-warning 
+            {% elif order.status == 'paid' %} bg-info 
+            {% elif order.status == 'shipped' %} bg-primary 
+            {% elif order.status == 'delivered' %} bg-success 
+            {% endif %}">
+            {{ order.get_status_display }}
+          </span>
+          <ul class="mt-2">
+            {% for item in order.items.all %}
+              <li>{{ item.product.name }} (x{{ item.quantity }}) - ${{ item.price }} c/u</li>
+            {% endfor %}
+          </ul>
+
+          <!-- Botón que abre el modal -->
+          <button class="btn btn-danger btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#confirmModal{{ order.id }}">
+            Eliminar
+          </button>
+
+          <!-- Modal de confirmación -->
+      <div class="modal fade" id="confirmModal{{ order.id }}" tabindex="-1" aria-labelledby="confirmModalLabel{{ order.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="confirmModalLabel{{ order.id }}">Confirmar eliminación</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+        <div class="modal-body">
+        ¿Estás seguro de que querés eliminar esta orden del {{ order.created_at|date:"d/m/Y H:i" }}?
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+          <a href="{% url 'orders:delete_order' order.id %}" class="btn btn-light">Eliminar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No tenés compras registradas.</p>
+  {% endif %}
+</div>
+{% endblock %}

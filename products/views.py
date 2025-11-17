@@ -4,7 +4,7 @@ from django.conf import settings
 from rest_framework import viewsets
 from .models import Product, DeliveryZone, Delivery, Category
 from .utils import calcular_ruta, calcular_costo_delivery
-from .forms import ProductForm
+from .forms import ProductForm, CommentForm
 from .serializers import ProductSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.contrib.auth.decorators import login_required
@@ -59,10 +59,29 @@ def product_list(request):
         'query': query,
     })
 
+def product_detail(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    comments = product.comments.all().order_by("-created_at")
 
-def product_detail(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    return render(request, 'products/product_detail.html', {'product': product})
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.product = product
+                comment.user = request.user
+                comment.save()
+                return redirect("products:product_detail", pk=product.pk)
+        else:
+            return redirect("login")
+    else:
+        form = CommentForm()
+
+    return render(request, "products/product_detail.html", {
+        "product": product,
+        "comments": comments,
+        "form": form,
+    })
 
 @login_required
 def product_edit(request, pk):
@@ -89,7 +108,10 @@ def product_delete(request, pk):
 
     return redirect("products:product_list")
 
-
+@login_required
+def mis_productos(request):
+    productos = Product.objects.filter(user=request.user).order_by("-created")
+    return render(request, "products/mis_productos.html", {"productos": productos})
 
 def about(request):
     return render(request, "products/about.html")

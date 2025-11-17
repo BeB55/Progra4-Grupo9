@@ -8,6 +8,12 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ("active", "category", "user", "created")                             # filtros en la barra lateral
     ordering = ("-created",)                                                            # orden por fecha de creación
 
+def get_readonly_fields(self, request, obj=None):
+        # Si el producto existe y el usuario no es el autor, no puede cambiar 'active'
+        if obj and obj.user != request.user:
+            return self.readonly_fields + ("active",)
+        return self.readonly_fields
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "description")

@@ -23,6 +23,18 @@
     </div>
   </div>
 
+  <!-- Mensaje dinámico de búsqueda/filtro -->
+  <div class="row mb-3">
+    <div class="col text-center">
+      {% if query %}
+        <p class="text-muted">Resultados para: <strong>{{ query }}</strong> ({{ products|length }} encontrados)</p>
+      {% endif %}
+      {% if selected_category %}
+        <p class="text-muted">Filtrado por categoría: <strong>{{ selected_category }}</strong></p>
+      {% endif %}
+    </div>
+  </div>
+
   <!-- CONTENEDOR PRINCIPAL: FILTROS + PRODUCTOS -->
   <div class="row">
 
@@ -65,7 +77,7 @@
 
       <div class="row">
         {% for producto in products %}
-          <div class="col-md-4 mb-4"  id="product-card">
+          <div class="col-md-4 mb-4" id="product-card">
 
             <a href="{% url 'products:product_detail' producto.id %}" style="text-decoration: none;">
               <div class="card h-100 shadow-sm">
