@@ -22,3 +22,8 @@ Thumbs.db
 */migrations/*.py
 */migrations/*.pyc
 
+staticfiles/
+
+
+
+
