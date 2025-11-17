@@ -1,5 +1,6 @@
 import os
 import mercadopago
+import dj_database_url 
 from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
@@ -132,12 +133,22 @@ SOCIALACCOUNT_PROVIDERS = {
          'AUTH_PARAMS': {'access_type': 'online'},
      }
 }
+
+# Replace the SQLite DATABASES configuration with PostgreSQL:
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.
+        default='postgresql://tu_feria_en_casa_user:xPKpwbKAa4q3bgLD8Ew3MStUWR2f4zxY@dpg-d4d9rvshg0os73dfcrn0-a.oregon-postgres.render.com/tu_feria_en_casa',
+        conn_max_age=600
+    )
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
