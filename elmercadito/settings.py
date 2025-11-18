@@ -1,6 +1,9 @@
 import os
 import mercadopago
 import dj_database_url 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
@@ -49,6 +52,7 @@ ORS_API_KEY = os.getenv('ORS_API_KEY')
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -64,6 +68,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     "rest_framework",
     'widget_tweaks',
+    'cloudinary',
+    'cloudinary_storage',
     "users",
     "products",
     "cart",
@@ -212,3 +218,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media' 
+
+CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
