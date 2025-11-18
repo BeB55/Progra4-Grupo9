@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from elmercadito import settings
 from products.models import Product
 from .models import Cart, CartItem
+from orders.models import Order, OrderItem
 # from django.conf import settings
 import mercadopago
 
