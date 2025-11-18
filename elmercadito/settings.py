@@ -143,11 +143,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Replace the SQLite DATABASES configuration with PostgreSQL:
 DATABASES = {
-    'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default='postgresql://tu_feria_en_casa_user:xPKpwbKAa4q3bgLD8Ew3MStUWR2f4zxY@dpg-d4d9rvshg0os73dfcrn0-a.oregon-postgres.render.com/tu_feria_en_casa',
-        conn_max_age=600
-    )
+    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 }
 
 # DATABASES = {
