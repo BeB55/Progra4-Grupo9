@@ -20,6 +20,11 @@
 
           <form method="post">
             {% csrf_token %}
+            {% if form.errors %}
+              <div class="alert alert-danger">
+                {{ form.errors }}
+              </div>
+            {% endif %}
 
               <div class="field">
                 <label for="username">Nombre de usuario</label>

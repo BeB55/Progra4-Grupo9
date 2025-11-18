@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
-from django.contrib.auth import login, logout, authenticate, get_user_model
+from django.contrib.auth import login, logout, authenticate, get_backends
 from django.contrib.auth.forms import AuthenticationForm
 
 from rest_framework import viewsets
@@ -20,8 +20,13 @@ def signup_view(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+
+            # 🔥 SOLUCIÓN: forzar backend
+            backend = get_backends()[0]
+            user.backend = f"{backend.__module__}.{backend.__class__.__name__}"
+
             login(request, user)
-            return redirect('home')  # o '/' si preferís
+            return redirect('home')
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/signup.html', {'form': form})
