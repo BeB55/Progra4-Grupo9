@@ -9,11 +9,9 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('admin/', admin.site.urls),
     path('api/auth/', include('rest_framework.urls')),
-    path('productos/', include('products.urls')),
+    path('productos/', include(('products.urls', 'products'), namespace='products')),
     path('carrito/', include('cart.urls')),
     path('scraping/', include('scraping.urls')),
     path("orders/", include("orders.urls")),
-    path("products/", include("products.urls")),
-
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
