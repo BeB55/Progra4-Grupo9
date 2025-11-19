@@ -4,6 +4,7 @@ import dj_database_url
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+from urllib.parse import urlparse
 from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
@@ -17,6 +18,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
+load_dotenv()
+
 GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
 GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
 
@@ -28,10 +31,19 @@ MERCADOPAGO_PUBLIC_KEY = os.getenv("MERCADOPAGO_PUBLIC_KEY")
 # Agrega credenciales
 sdk = mercadopago.SDK("TEST_ACCESS_TOKEN")
 
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media' 
+
+cloudinary.config( 
+        cloud_name=os.getenv("CLOUD_NAME"),
+        api_key=os.getenv("API_KEY"),
+        api_secret=os.getenv("API_SECRET"),
+)
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # Quick-start development settings - unsuitable for production
@@ -41,17 +53,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-y4o+3-%*@a_h5vx!=q(m@!mm%f7mctbz6gt+@0=&@q1=!ak-jn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 ORS_API_KEY = os.getenv('ORS_API_KEY')
 
-# Application definition
-
 AUTH_USER_MODEL = 'users.CustomUser'
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -168,12 +177,10 @@ else:
         }
     }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = []
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -195,6 +202,12 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # This production code might break development mode, 
 # so we check whether we're in DEBUG mode
 if not DEBUG:
@@ -202,21 +215,6 @@ if not DEBUG:
     # (this is specific to Render)
     STATIC_ROOT = BASE_DIR / "staticfiles"
 
-    # Enable the WhiteNoise storage backend, 
-    # which compresses static files to reduce disk use
-    # and renames the files with unique names for each version 
-    # to support long-term caching
+    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
+    # and renames the files with unique names for each version to support long-term caching
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media' 
-
-CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

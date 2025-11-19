@@ -1,4 +1,5 @@
 {% load static %}
+{% load cloudinary %}
 
 <!DOCTYPE html>
 <html lang="es">
@@ -53,10 +54,10 @@
          <div class="dropdown">
           <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             Mi cuenta
-              <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'img/default.png' %}{% endif %}"
-                alt="Avatar"
+            <img src="{{ user.get_avatar_url }}" 
+                alt="Avatar" 
                 class="rounded-circle border border-light"
-                width="35" height="35">
+                width="35" height="35"/>
           </button>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{% url 'profile' %}">Ver perfil</a></li>
@@ -103,10 +104,10 @@
     {% if request.user.is_authenticated %}
       <div class="text-center mb-4">
         {% if request.user.avatar %}
-          <img src="{{ request.user.avatar.url }}" 
+          <img src="{{ user.get_avatar_url }}"
                alt="Foto de perfil" 
                class="rounded-circle border border-light" 
-               width="80" height="80">
+               width="80" height="80"/>
         {% else %}
           <img src="{% static 'img/default.png' %}" 
                alt="Foto por defecto" 

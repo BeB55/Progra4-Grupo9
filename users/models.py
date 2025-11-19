@@ -11,3 +11,8 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def get_avatar_url(self):
+        if self.avatar and hasattr(self.avatar, "url") and "default.png" not in self.avatar.url:
+            return self.avatar.url
+        return "/static/img/default.png"
