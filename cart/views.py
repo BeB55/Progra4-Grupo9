@@ -24,19 +24,20 @@ def add_to_cart(request, product_id):
             item.quantity += 1
             item.save()
             messages.success(request, f"✅ '{product.name}' se añadió al carrito correctamente.")
-            return redirect('products:product_detail', product_id=product.id)
+            return redirect('products:product_detail', pk=product.id)
         else:
             messages.error(request, f"❌ No hay más stock disponible de '{product.name}'.")
-            return redirect('products:product_detail', product_id=product.id)
+            return redirect('products:product_detail', pk=product.id)
     else:
         if product.stock > 0:
             item.quantity = 1
             item.save()
             messages.success(request, f"✅ '{product.name}' se añadió al carrito correctamente.")
-            return redirect('products:product_detail', product_id=product.id)
+            return redirect('products:product_detail', pk=product.id)
         else:
             messages.error(request, f"❌ '{product.name}' no tiene stock disponible.")
-            return redirect('products:product_detail', product_id=product.id)
+            return redirect('products:product_detail', pk=product.id)
+
 
 
 
