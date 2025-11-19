@@ -1,10 +1,10 @@
-# 🛒 El Mercadito
+# 🛒 Tu Feria En Casa
 
 [![Django](https://img.shields.io/badge/Django-5.0-green)]()
 [![CI/CD](https://github.com/BeB55/Progra4-Grupo9/actions/workflows/tests.yml/badge.svg)]()
 [![License](https://img.shields.io/badge/license-Académico-blue)]()
 
-El Mercadito es una aplicación web desarrollada en **Django** que simula un mercado online con funcionalidades de catálogo, carrito de compras, autenticación con Google y gestión de usuarios.  
+Tu Feria En Casa es una aplicación web desarrollada en **Django** que simula un mercado online con funcionalidades de catálogo, carrito de compras, autenticación con Google y gestión de usuarios.  
 El proyecto está orientado a la práctica grupal de desarrollo web con integración de APIs externas y despliegue en la nube.
 
 ---
@@ -25,8 +25,7 @@ El proyecto está orientado a la práctica grupal de desarrollo web con integrac
 - **Backend:** Django, Django REST Framework  
 - **Frontend:** Bootstrap, Leaflet.js (mapas interactivos)  
 - **Autenticación:** django-allauth con login de Google  
-- **CI/CD:** GitHub Actions (testing automático)  
-- **APIs externas:** OpenRouteService (cálculo de rutas y costos de delivery)  
+- **APIs externas:** OpenRouteService (cálculo de rutas y costos de delivery), Mercado Pago (Pago de productos), Cloudinary (Almacenamiento de imágenes)
 - **Base de datos:** SQLite (desarrollo) / PostgreSQL (producción)  
 - **Gestión de dependencias:** Python-decouple, dotenv  
 
@@ -60,6 +59,8 @@ DEBUG=True
 GOOGLE_OAUTH_CLIENT_ID=xxxxxxxx.apps.googleusercontent.com
 GOOGLE_OAUTH_CLIENT_SECRET=xxxxxxxxxxxx
 ORS_API_KEY=xxxxxxxxxxxx
+MERCADOPAGO_ACCESS_TOKEN=xxxxxxxxxxxx
+MERCADOPAGO_PUBLIC_KEY=xxxxxxxxxxxx
 ```
 
 5. Migraciones y superusuario
@@ -120,11 +121,6 @@ elmercadito/                 # Configuración principal del proyecto
 │       ├── products.html
 │       ├── product_detail.html
 │       └── mapa_delivery.html
-│
-├── scraping/                # App para scraping de datos externos
-│   ├── models.py
-│   ├── views.py
-│   └── utils.py
 │
 ├── users/                   # App de usuarios
 │   ├── models.py (CustomUser)
