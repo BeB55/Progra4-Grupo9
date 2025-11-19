@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect
-from rest_framework import viewsets
-from django.contrib.auth import login, logout, authenticate
-from .forms import CustomUserCreationForm
+from django.http import HttpResponseRedirect
+from django.contrib.auth import login, logout, authenticate, get_backends
 from django.contrib.auth.forms import AuthenticationForm
+
+from rest_framework import viewsets
+from .forms import CustomUserCreationForm, AvatarForm, LoginForm
 from .models import CustomUser
 from .serializers import UserSerializer
-from django.http import HttpResponseRedirect
-import time
-from .forms import AvatarForm
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -21,19 +20,25 @@ def signup_view(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+
+            # 🔥 SOLUCIÓN: forzar backend
+            backend = get_backends()[0]
+            user.backend = f"{backend.__module__}.{backend.__class__.__name__}"
+
             login(request, user)
-            return redirect('home')  # o '/' si preferís
+            return redirect('home')
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/signup.html', {'form': form})
 
+
 def login_view(request):
-    form = AuthenticationForm(request, data=request.POST or None)
+    form = LoginForm(request.POST or None)
 
     if request.method == 'POST' and form.is_valid():
-        user = form.get_user()
+        user = form.cleaned_data["user"]
         login(request, user)
-        return redirect('home')  # o '/' si querés
+        return redirect('home')
 
     return render(request, 'users/login.html', {'form': form})
 
