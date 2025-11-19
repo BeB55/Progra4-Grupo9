@@ -4,6 +4,7 @@ import dj_database_url
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+from urllib.parse import urlparse
 from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
@@ -17,6 +18,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
+load_dotenv()
+
 GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
 GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")
 
@@ -28,15 +31,18 @@ MERCADOPAGO_PUBLIC_KEY = os.getenv("MERCADOPAGO_PUBLIC_KEY")
 # Agrega credenciales
 sdk = mercadopago.SDK("TEST_ACCESS_TOKEN")
 
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR / 'media' 
 
-CLOUDINARY_URL = os.getenv("CLOUDINARY_URL")
+cloudinary.config( 
+        cloud_name=os.getenv("CLOUD_NAME"),
+        api_key=os.getenv("API_KEY"),
+        api_secret=os.getenv("API_SECRET"),
+)
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 

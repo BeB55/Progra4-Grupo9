@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 {% load static %}
+{% load cloudinary %}
 
 {% block content %}
 <section style="padding: 20px 20px; background-color: #f8f9fa; color: #000000;">
@@ -13,10 +14,10 @@
     <div class="container mt-3">
         <div class="row mb-4">
             <div class="col text-center">
-                <img src="{{ user.get_avatar_url }}" alt="Avatar" />
+                <img src="{{ user.get_avatar_url }}"
                     alt="Avatar"
                     class="rounded-circle border border-light"
-                    width="150" height="150">
+                    width="150" height="150"/>
                 <hr style="width: 50%; margin: 10px auto 10px;">
                 <h1>{{ user.username }}</h1>
             </div>
