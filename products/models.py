@@ -16,9 +16,6 @@ class Category(models.Model):
         return self.name
 
 
-from django.conf import settings
-from django.db import models
-
 class Product(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField("Nombre del producto", max_length=200, default="sin nombre")

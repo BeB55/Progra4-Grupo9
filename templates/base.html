@@ -53,7 +53,7 @@
          <div class="dropdown">
           <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             Mi cuenta
-              <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'img/default.png' %}{% endif %}"
+            <img src="{{ user.get_avatar_url }}" alt="Avatar" />
                 alt="Avatar"
                 class="rounded-circle border border-light"
                 width="35" height="35">
@@ -103,7 +103,7 @@
     {% if request.user.is_authenticated %}
       <div class="text-center mb-4">
         {% if request.user.avatar %}
-          <img src="{{ request.user.avatar.url }}" 
+          <img src="{{ user.get_avatar_url }}" alt="Avatar" />
                alt="Foto de perfil" 
                class="rounded-circle border border-light" 
                width="80" height="80">

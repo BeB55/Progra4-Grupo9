@@ -13,7 +13,7 @@
     <div class="container mt-3">
         <div class="row mb-4">
             <div class="col text-center">
-                <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'img/default.png' %}{% endif %}"
+                <img src="{{ user.get_avatar_url }}" alt="Avatar" />
                     alt="Avatar"
                     class="rounded-circle border border-light"
                     width="150" height="150">
